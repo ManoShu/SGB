@@ -8,24 +8,21 @@ int main()
 {
 	bool isRunning = true; 
 
-	TestDisplay* myDisplay = new TestDisplay();
+	TestDisplay myDisplay;
 
-	if (myDisplay->Init() != SGB_SUCCESS)
+	if (myDisplay.Init() != SGB_SUCCESS)
 	{
 		printf("Failed to init: %s\n", SDL_GetError());
 		return 1;
 	}
 
-	myDisplay->SetLoadingScreen(new TestLoading());
-	myDisplay->SetScreen(new TestScreen());
+	myDisplay.SetLoadingScreen(new TestLoading());
+	myDisplay.SetScreen(new TestScreen());
 
 	while (isRunning)
 	{
-		myDisplay->Update(&isRunning);
+		myDisplay.Update(&isRunning);
 	}
-
-	delete myDisplay;
-	myDisplay = NULL;
 
 	return 0;
 }

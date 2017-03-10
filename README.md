@@ -15,7 +15,7 @@ git clone https://github.com/ManoShu/SGB
 2) Build the source
 
 ```
-cd SGB && make
+cd SGB/ && make
 ```
 
 3) Install the library
@@ -42,27 +42,24 @@ int main()
 {
 	bool isRunning = true;
 
-	SGB_Display* myDisplay = new Implemented_SGB_Display();
+	Implemented_SGB_Display myDisplay;
 
-	if (myDisplay->Init() != SGB_SUCCESS)
+	if (myDisplay.Init() != SGB_SUCCESS)
 	{
 		printf("Failed to init: %s\n", SDL_GetError());
 		return 1;
 	}
 
 	// a loading screen is not required, but it gives a better view for the end user
-	myDisplay->SetLoadingScreen(new Implemented_SGB_LoadingScreen());
+	myDisplay.SetLoadingScreen(new Implemented_SGB_LoadingScreen());
 
-	myDisplay->SetScreen(new Implemented_SGB_Screen());
+	myDisplay.SetScreen(new Implemented_SGB_Screen());
 
 	while (isRunning)
 	{
-		myDisplay->Update(&isRunning);
+		myDisplay.Update(&isRunning);
 	}
-
-	delete myDisplay;
-	myDisplay = NULL;
-
+	
 	return 0;
 }
 ```
