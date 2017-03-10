@@ -4,15 +4,15 @@ SGB_DisplayInitInfo TestDisplay::GetInitInfo()
 {
 	SGB_DisplayInitInfo info;
 
-	info.handleSDL = true;
+	info.handleSDL = true; //SGB_Display will manage SDL for you
 	info.windowTitle = "Test Display";
 	info.windowWidth = 160;
 	info.windowHeight = 120;
-	info.frameRate = 60;
-	info.rendererIndex = 2;
-	info.rendererFlags = SDL_RendererFlags::SDL_RENDERER_ACCELERATED;
-	info.blendMode = SDL_BlendMode::SDL_BLENDMODE_NONE;
-	info.enableVSync = true;
+	info.frameRate = 30;// in frames per second
+	info.rendererIndex = -1; //auto-select renderer
+	info.rendererFlags = 0; //no renderer requirements
+	info.blendMode = SDL_BlendMode::SDL_BLENDMODE_NONE; //for more simple and fasterer rendering
+	info.enableVSync = false;
 	info.borderless = false;
 	info.fullScreen = false;
 	info.unlockFPS = false;

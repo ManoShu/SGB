@@ -91,6 +91,7 @@ system.
 ##### Running the example
 
 After a successful compilation, execute `./example` to run the example application.
+If it can't run properly, try changing some of the renderer options set on the `TestDisplay.cpp` file.
 
 ## Documentation
 

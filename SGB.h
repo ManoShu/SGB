@@ -3,6 +3,7 @@
 //SGB = SDL(2) Graphics Bootstrapper
 
 //TODO: Install docs option on Makefile
+//TODO: Use only one makefile format
 
 #include "SGB_SDL.h"
 #include "SGB_types.h"
