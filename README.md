@@ -97,6 +97,14 @@ Just execute `doxygen Doxyfile` on the cloned directory to generate a HTML versi
 
 The documentation will be located on the `docs` subdirectory.
 
+## TODOs
+
+* Eliminate one of the Makefile templates used (probably the example one)
+* Check compatibility of the build process on other platforms (vs-c++, mingw) 
+* Implement menu component (with SDL_ttf font support)
+* Use SDL_Thread instead of std::thread directly
+
+
 ## External Resources
 
 * [SDL Main Page](https://libsdl.org/)
