@@ -15,8 +15,7 @@ git clone https://github.com/ManoShu/SGB
 2) Build the source
 
 ```
-cd SGB
-make
+cd SGB && make
 ```
 
 3) Install the library
@@ -83,7 +82,7 @@ for the compilation to succeed.
 
 Execute the following command to compile without a Makefile:
 
-`g++ -o example *.cpp -lSDL2 -pthread -std=c++11 `
+`g++ -o example *.cpp -lSGB -lSDL2 -pthread -std=c++11 `
 
 This method is discouraged as it doesn't benefit from the Makefile's incremental compilation
 system.
