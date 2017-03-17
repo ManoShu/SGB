@@ -79,7 +79,7 @@ for the compilation to succeed.
 
 Execute the following command to compile without a Makefile:
 
-`g++ -o example *.cpp -lSGB -lSDL2 -pthread -std=c++11 `
+`g++ -o example *.cpp -lSGB -lSDL2 -std=c++11 `
 
 This method is discouraged as it doesn't benefit from the Makefile's incremental compilation
 system.
@@ -101,9 +101,6 @@ The documentation will be located on the `docs` subdirectory.
 
 * Eliminate one of the Makefile templates used (probably the example one)
 * Check compatibility of the build process on other platforms (vs-c++, mingw) 
-* Implement menu component (with SDL_ttf font support)
-* Use SDL_Thread instead of std::thread directly
-
 
 ## External Resources
 

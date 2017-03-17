@@ -40,7 +40,7 @@ SGB_Display::~SGB_Display()
 
 	if (_loadingThread != NULL)
 	{
-		delete _loadingThread;
+		//delete _loadingThread;
 		_loadingThread = NULL;
 	}
 
@@ -223,25 +223,33 @@ void SGB_Display::StartLoadingProcess()
 {
 	if (_loadingThread != NULL)
 	{
-		delete _loadingThread;
+		//delete _loadingThread;
 		_loadingThread = NULL;
 	}
-	_loadingThread = new std::thread(&SGB_Display::ExecuteLoadingProcess, this);
+	_loadingThread = SDL_CreateThread(
+		SGB_Display::ExecuteLoadingProcess,
+		"SGB_LoadingThread",
+		(void*)this);
+	//new std::thread(&SGB_Display::ExecuteLoadingProcess, this);
 }
 
-void SGB_Display::ExecuteLoadingProcess()
+int SGB_Display::ExecuteLoadingProcess(void* data)
 {
-	if (_screenToBeUnloaded != NULL)
+	auto t = (SGB_Display *)data;
+
+	if (t->_screenToBeUnloaded != NULL)
 	{
-		_screenToBeUnloaded->UnloadScreen();
-		delete _screenToBeUnloaded;
-		_screenToBeUnloaded = NULL;
+		t->_screenToBeUnloaded->UnloadScreen();
+		delete t->_screenToBeUnloaded;
+		t->_screenToBeUnloaded = NULL;
 	}
 
-	_screenToBeLoaded->SetDisplay(this);
-	_screenToBeLoaded->LoadScreen();
+	t->_screenToBeLoaded->SetDisplay(t);
+	t->_screenToBeLoaded->LoadScreen();
 
-	_finishedLoadingScreen.store(true);
+	t->_finishedLoadingScreen.store(true);
+	
+	return 0;
 }
 
 void SGB_Display::FinishLoadingProcess()
@@ -252,9 +260,9 @@ void SGB_Display::FinishLoadingProcess()
 		_screenToBeUnloaded = NULL;
 	}
 
-	if (_loadingThread != NULL && _loadingThread->joinable())
+	if (_loadingThread != NULL)
 	{
-		_loadingThread->join();
+		SDL_WaitThread(_loadingThread,NULL);
 	}
 
 	_currentScreen = _screenToBeLoaded;

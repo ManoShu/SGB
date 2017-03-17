@@ -7,7 +7,6 @@
 #include "SGB_Timer.h"
 
 #include <algorithm>
-#include <thread>
 #include <atomic> 
 
 class SGB_Screen;  
@@ -365,7 +364,7 @@ private:
 
 	void PrepareToLoad(SGB_Screen * screen);
 	void StartLoadingProcess();
-	void ExecuteLoadingProcess();
+	static int ExecuteLoadingProcess(void* data);
 	void FinishLoadingProcess();
 
 
@@ -420,6 +419,6 @@ private:
 	std::atomic<bool> _finishedLoadingScreen;
 
 	//Holds the thread being used to execute the loading process
-	std::thread* _loadingThread;
+	SDL_Thread* _loadingThread;
 };
 
