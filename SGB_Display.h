@@ -311,6 +311,9 @@ public:
 
 protected:
 
+	//TODO: doc
+	virtual void BeforeInit(){};
+
 	/*! \brief Requests information about how the SGB_Display will be initialized.
 	*
 	* \returns The initialization info needed to complete Init().
@@ -319,6 +322,9 @@ protected:
 	* so that `Init()` can be completed.
 	*/
 	virtual SGB_DisplayInitInfo GetInitInfo() = 0;
+	
+	//TODO:doc
+	virtual void AfterInit(){};
 
 	/*! \brief Allows to render BEFORE the current SGB_Screen (be a regular or loading screen) is rendered.
 	*

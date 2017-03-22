@@ -55,6 +55,8 @@ SGB_Display::~SGB_Display()
 
 int SGB_Display::Init()
 {
+	BeforeInit();
+
 	if (_initInfo.handleSDL)
 	{
 		if (SDL_Init(0))
@@ -133,6 +135,8 @@ int SGB_Display::Init()
 	frameInterval = (1000 / _initInfo.frameRate);
 	countedFrames = 0;
 	lastCountReset = 0;
+	
+	AfterInit();
 
 	fpsTimer.start();
 	currentTime = fpsTimer.getTicks();
