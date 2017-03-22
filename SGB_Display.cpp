@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <thread>
+#include <numeric>
 
 SGB_Display::SGB_Display()
 {

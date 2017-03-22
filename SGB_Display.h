@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <atomic> 
+#include <vector>
 
 class SGB_Screen;  
 
