@@ -120,13 +120,14 @@ int SGB_Display::Init()
 	{
 		_initInfo.rendererFlags = _initInfo.rendererFlags | SDL_RENDERER_PRESENTVSYNC;
 	}
-
+	
 	_renderer = SDL_CreateRenderer(_window, _initInfo.rendererIndex, _initInfo.rendererFlags);
 
 	if (_renderer == NULL)
 	{
 		return SGB_FAIL;
 	}
+
 
 	if (SDL_SetRenderDrawBlendMode(_renderer, _initInfo.blendMode))
 	{
@@ -136,7 +137,7 @@ int SGB_Display::Init()
 	frameInterval = (1000 / _initInfo.frameRate);
 	countedFrames = 0;
 	lastCountReset = 0;
-	
+
 	AfterInit();
 
 	fpsTimer.start();
@@ -283,7 +284,6 @@ void SGB_Display::FinishLoadingProcess()
 void SGB_Display::SetScreen(SGB_Screen * screen)
 {
 	PrepareToLoad(screen);
-
 	StartLoadingProcess();
 }
 

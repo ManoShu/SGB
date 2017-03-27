@@ -245,6 +245,7 @@ public:
 	*/
 	void Update(bool* isRunning);
 
+	//TODO: remark about code after SetNextScreen
 	/*! \brief Define what will be the next SGB_Screen to be shown.
 	*
 	*\param screen The SGB_Screen to be set.
