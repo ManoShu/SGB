@@ -245,6 +245,12 @@ protected:
 	*/
 	void FillRect(SDL_Rect rect, SDL_Color color);
 
+	//TODO: doc
+	void DrawRect(SDL_Rect rect);
+
+	//TODO: doc
+	void DrawRect(SDL_Rect rect, SDL_Color color);
+
 	/*! \brief Renders a filled rectangle with the current render color and given position/dimension.
 	*
 	* \param rect The SDL_Rect position\\dimension where the rectangle will be rendered.

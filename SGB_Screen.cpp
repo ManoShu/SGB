@@ -27,6 +27,22 @@ void SGB_Screen::FillRect(SDL_Rect rect, SDL_Color color)
 	_display->SetDrawColor(oldColor);
 }
 
+void SGB_Screen::DrawRect(SDL_Rect rect, SDL_Color color)
+{
+	auto oldColor = _display->GetDrawColor();
+	
+	_display->SetDrawColor(color);
+
+	DrawRect(rect);
+
+	_display->SetDrawColor(oldColor);
+}
+
+void SGB_Screen::DrawRect(SDL_Rect rect)
+{
+	SDL_RenderDrawRect(_renderer, &rect);
+}
+
 void SGB_Screen::FillRect(SDL_Rect rect)
 {
 	SDL_RenderFillRect(_renderer, &rect);
