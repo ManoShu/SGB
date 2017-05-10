@@ -71,36 +71,37 @@ contained in the `example` subdirectory.
 
 ##### Compile using the Makefile
 
-Execute `make` on this directory to build it. 
-In addition to SGb beign compiled and installed, the SDL2 library and include files must be accesible 
+Execute `make buildexample` on the repository directory to build it. 
+In addition to SGB beign compiled and installed, the SDL2 library and include files must be accesible 
 for the compilation to succeed.
 
 ##### Compiling directly
 
-Execute the following command to compile without a Makefile:
+Enter the `example` directory, then execute the following command to compile without a Makefile:
 
 `g++ -o example *.cpp -lSGB -lSDL2 -std=c++11 `
 
-This method is discouraged as it doesn't benefit from the Makefile's incremental compilation
-system.
-
 ##### Running the example
 
-After a successful compilation, execute `./example` to run the example application.
-If it can't run properly, try changing some of the renderer options set on the `TestDisplay.cpp` file.
+After a successful compilation, you can either execute `make runexample` (compiling the source on the fly) or 
+enter de example directory and simple execute `./example` to run the application.
+If it can't run properly, try changing some of the renderer options 
+set on the `TestDisplay.cpp` file and build it again.
 
 ## Documentation
 
 The comments on the files are [Doxygen](http://www.stack.nl/~dimitri/doxygen/download.html)-compatible, and a Doxyfile is provided with the base configuration.
 
-Just execute `doxygen Doxyfile` on the cloned directory to generate a HTML version of the documentation.
+Just execute `make docs` on the cloned directory to generate a HTML version of the documentation.
 
-The documentation will be located on the `docs` subdirectory.
+The documentation will be located on the `doc/html` subdirectory. 
+Open the `index.html` page to access all the generated documentation.
 
 ## TODOs
 
-* Eliminate one of the Makefile templates used (probably the example one)
-* Check compatibility of the build process on other platforms (vs-c++, mingw) 
+* Documentation on the private section of the classes and the new few public methods;
+* Review naming conventions for the entire project;
+* Check compatibility of the build process on other platforms (vs-c++, mingw);
 
 ## External Resources
 

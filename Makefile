@@ -8,11 +8,11 @@ $(info - Makefile.conf loaded)
 
 # find project files
 
-H_FILES   :=    $(shell find -L ./ -maxdepth $(INC_DIRECTORY_DEPTH) -name '*.h' -exec dirname {} \; | sed 's/ /\\ /g' | uniq)
+H_FILES   :=    $(shell find -L $(INC_DIRECTORY) -maxdepth $(INC_DIRECTORY_DEPTH) -name '*.h' -exec dirname {} \; | sed 's/ /\\ /g' | uniq)
 
-C_FILES   :=    $(shell find ./ -maxdepth $(SRC_DIRECTORY_DEPTH) -name '*.c' -type f | sed 's/ /\\ /g' | uniq)
+C_FILES   :=    $(shell find $(SRC_DIRECTORY) -maxdepth $(SRC_DIRECTORY_DEPTH) -name '*.c' -type f | sed 's/ /\\ /g' | uniq)
 
-CXX_FILES :=    $(shell find ./ -maxdepth $(SRC_DIRECTORY_DEPTH) -name '*.cpp' -type f | sed 's/ /\\ /g' | uniq)
+CXX_FILES :=    $(shell find $(SRC_DIRECTORY) -maxdepth $(SRC_DIRECTORY_DEPTH) -name '*.cpp' -type f | sed 's/ /\\ /g' | uniq)
 
 O_FILES   :=    $(C_FILES:.c=.o)
 
@@ -92,15 +92,14 @@ clean:
 
 # Clear Objects & Executables
 
-cleanall: clean
-	$(info - Remove all files in $(BIN_DIRECTORY))
-	@find $(BIN_DIRECTORY) -name \*.* -type f -delete
+cleanall: clean cleanexample cleandocs
 	$(info - Remove $(BIN_DIRECTORY) directory)
-	@rm -f -R $(BIN_DIRECTORY)
+	@rm -f -R  $(BIN_DIRECTORY)
+	$(info - Done.)
 
 install: 
 	$(info - Copying header file(s))
-	@cp *.h $(INS_HEARERS_DIRECTORY)
+	@cp $(INC_DIRECTORY)/*.h $(INS_HEARERS_DIRECTORY)
 	$(info - Copying library file(s))
 	@cp $(BIN_DIRECTORY)/$(FULL_LIBRARY_NAME) $(INS_SO_DIRECTORY)$(FULL_LIBRARY_NAME)
 	$(info - Linking library file(s))
@@ -114,4 +113,30 @@ uninstall:
 	$(info - Deleting header directory)
 	@rm -f -R $(INS_HEARERS_DIRECTORY)$(PROJECT_NAME)*
 	$(info - Deleting library directory)
-	@rm -f -R  $(INS_SO_DIRECTORY)$(PROJECT_NAME)*
+	@rm -f -R  $(INS_SO_DIRECTORY)$(LIBRARY_NAME)*
+
+docs:
+	$(info - Generating doc files...)
+	@cd $(DOC_DIRECTORY)/; doxygen Doxyfile;
+	$(info - Done.)
+
+cleandocs:
+	$(info - Removing doc files...)
+#TODO:maybe would be better to delete everything except the doxyfile itself
+	@cd $(DOC_DIRECTORY)/; rm -f -R html/; rm -f doxygen_sqlite3.db;
+	$(info - Done.)
+
+buildexample:
+	$(info - Compiling example application...)
+	@cd $(EXAMPLE_DIRECTORY)/; $(CXX) -o example *.cpp -std=c++11 -lSGB -lSDL2;
+	$(info - Done.)
+	
+cleanexample:
+	$(info - Removing example build...)
+	@cd $(EXAMPLE_DIRECTORY)/; rm -f example;
+	$(info - Done.)
+
+runexample: buildexample
+	$(info - Running example...)
+	@cd $(EXAMPLE_DIRECTORY)/; ./example;
+	$(info - Done.)
