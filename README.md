@@ -1,4 +1,4 @@
-# SGB - SDL(2) Graphical Bootstrapper
+# SGB - SDL2 Graphical Bootstrapper
 
 ## Objective
 

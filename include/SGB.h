@@ -1,6 +1,6 @@
 #pragma once
 
-//SGB = SDL(2) Graphics Bootstrapper
+//SGB = SDL2 Graphics Bootstrapper
 
 #include "SGB_SDL.h"
 #include "SGB_types.h"
