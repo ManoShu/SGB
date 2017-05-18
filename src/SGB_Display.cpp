@@ -48,7 +48,7 @@ SGB_Display::~SGB_Display()
 	SDL_DestroyRenderer(_renderer);
 	SDL_DestroyWindow(_window);
 
-	if (_initInfo.handleSDL)
+	if (_initInfo.HandleSDLStartupAndFinish)
 	{
 		SDL_Quit();
 	}
@@ -58,7 +58,7 @@ int SGB_Display::Init()
 {
 	BeforeInit();
 
-	if (_initInfo.handleSDL)
+	if (_initInfo.HandleSDLStartupAndFinish)
 	{
 		if (SDL_Init(0))
 		{
@@ -86,22 +86,22 @@ int SGB_Display::Init()
 
 	Uint32 windowFlags = SDL_WINDOW_SHOWN;
 
-	if (_initInfo.borderless)
+	if (_initInfo.BorderlessWindow)
 	{
 		windowFlags |= SDL_WINDOW_BORDERLESS;
 	}
 
-	if (_initInfo.fullScreen)
+	if (_initInfo.FullScreenWindow)
 	{
 		windowFlags |= SDL_WINDOW_FULLSCREEN;
 	}
 
 	_window = SDL_CreateWindow(
-		_initInfo.windowTitle,
+		_initInfo.WindowTitle,
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		_initInfo.windowWidth,
-		_initInfo.windowHeight,
+		_initInfo.WindowDefaultWidth,
+		_initInfo.WindowDefaultHeight,
 		windowFlags
 	);
 
@@ -111,17 +111,17 @@ int SGB_Display::Init()
 	}
 
 	//checking battery status
-	if (_initInfo.unlockFPS && SDL_RunningOnBattery() && !_initInfo.unlockOnBattery)
+	if (_initInfo.UnlockFrameRate && SDL_RunningOnBattery() && !_initInfo.UnlockFrameRateOnBattery)
 	{
-		_initInfo.unlockFPS = false;
+		_initInfo.UnlockFrameRate = false;
 	}
 
-	if (_initInfo.enableVSync)
+	if (_initInfo.EnableVSync)
 	{
-		_initInfo.rendererFlags = _initInfo.rendererFlags | SDL_RENDERER_PRESENTVSYNC;
+		_initInfo.RendererFlags = _initInfo.RendererFlags | SDL_RENDERER_PRESENTVSYNC;
 	}
 	
-	_renderer = SDL_CreateRenderer(_window, _initInfo.rendererIndex, _initInfo.rendererFlags);
+	_renderer = SDL_CreateRenderer(_window, _initInfo.RendererIndex, _initInfo.RendererFlags);
 
 	if (_renderer == NULL)
 	{
@@ -129,12 +129,12 @@ int SGB_Display::Init()
 	}
 
 
-	if (SDL_SetRenderDrawBlendMode(_renderer, _initInfo.blendMode))
+	if (SDL_SetRenderDrawBlendMode(_renderer, _initInfo.RendererBlendMode))
 	{
 		return SGB_FAIL;
 	}
 
-	frameInterval = (1000 / _initInfo.frameRate);
+	frameInterval = (1000 / _initInfo.TargetFrameRate);
 	countedFrames = 0;
 	lastCountReset = 0;
 
@@ -311,12 +311,12 @@ void SGB_Display::BeginUpdate()
 	capTimer.start();
 
 	//Calculate and correct fps
-	if (_initInfo.fpsStep < 1)
+	if (_initInfo.FrameRateSamplesPerSecond < 1)
 	{
-		_initInfo.fpsStep = 1;
+		_initInfo.FrameRateSamplesPerSecond = 1;
 	}
 
-	Uint32 split = (1000 / _initInfo.fpsStep);
+	Uint32 split = (1000 / _initInfo.FrameRateSamplesPerSecond);
 	Uint32 timeDiff = currentTime - lastCountReset;
 
 	if (timeDiff > split)
@@ -325,7 +325,7 @@ void SGB_Display::BeginUpdate()
 
 		_fpsQueue.insert(_fpsQueue.end(), countedFrames);
 
-		if (_fpsQueue.size() > _initInfo.fpsStep)
+		if (_fpsQueue.size() > _initInfo.FrameRateSamplesPerSecond)
 		{
 			_fpsQueue.erase(_fpsQueue.begin());
 		}
@@ -369,7 +369,7 @@ void SGB_Display::EndUpdate()
 
 	//If frame finished early
 	int frameTicks = capTimer.getTicks();
-	if (!_initInfo.unlockFPS && frameTicks < frameInterval)
+	if (!_initInfo.UnlockFrameRate && frameTicks < frameInterval)
 	{
 		//Wait remaining time
 		SDL_Delay(frameInterval - frameTicks);
@@ -391,7 +391,7 @@ SDL_Color SGB_Display::GetColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 
 void SGB_Display::SetDefaultColor()
 {
-	SetDrawColor(_initInfo.drawColor);
+	SetDrawColor(_initInfo.RendererDefaultDrawColor);
 }
 
 void SGB_Display::SetDrawColor(SDL_Color color)
@@ -419,7 +419,7 @@ SDL_Color SGB_Display::GetDrawColor()
 
 void SGB_Display::Clear()
 {
-	SetDrawColor(_initInfo.backgroundColor);
+	SetDrawColor(_initInfo.RendererBackgroundColor);
 
 	SDL_RenderClear(_renderer);
 
