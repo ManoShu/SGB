@@ -8,7 +8,9 @@ $(info - Makefile.conf loaded)
 
 # find project files
 
-H_FILES   :=    $(shell find -L $(INC_DIRECTORY) -maxdepth $(INC_DIRECTORY_DEPTH) -name '*.h' -exec dirname {} \; | sed 's/ /\\ /g' | uniq)
+# H_FILES   :=    $(shell find -L $(INC_DIRECTORY) -maxdepth $(INC_DIRECTORY_DEPTH) -name '*.h' -exec dirname {} \; | sed 's/ /\\ /g' | uniq)
+
+H_FILES   :=    $(shell find -L $(INC_DIRECTORY) -maxdepth $(INC_DIRECTORY_DEPTH) -name '*.h' -type f | sed 's/ /\\ /g' | uniq)
 
 C_FILES   :=    $(shell find $(SRC_DIRECTORY) -maxdepth $(SRC_DIRECTORY_DEPTH) -name '*.c' -type f | sed 's/ /\\ /g' | uniq)
 
@@ -24,7 +26,7 @@ C_FILES   :=    $(notdir  $(C_FILES))
 
 CXX_FILES :=    $(notdir  $(CXX_FILES))
 
-INCLUDES  :=    $(H_FILES:%=-I%)
+INCLUDES  :=    -I$(INC_DIRECTORY) #$(H_FILES:%=-I%)
 
 LIBRARY_NAME := lib$(PROJECT_NAME).so
 
