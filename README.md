@@ -12,10 +12,49 @@ To bootstrap any SDL2 graphical application, letting the user focus on what the 
 git clone https://github.com/ManoShu/SGB
 ```
 
+### On Windows (as VC++ static library)
+
+2) Download the latest Visual C++ 32bit binaries for SDL2
+
+The zip file would be named `SDL2-devel-VERSION-VC.zip`
+
+Create a `lib` folder on the cloned directory and unpack the zip file there.
+
+Rename the `SDL2-VERSION` folder to just `SDL2`
+
+Enter the SDL2 folder and move the `.h` files from the `include` folder to the parent folder.
+Delete the now empty folder.
+
+3) Build the solution
+
+Open the SGB.sln file found in `build\msvc` and build it.
+The lib file should be located on `build\msvc\bin\[Debug or Release]\SGB.lib`
+
+### On Linux (using the included Makefile)
+
+(Extra Step) if the SDL2 develepment libraries are not already installed,
+you can either get it from your package manager (for apt, is `libsdl2-dev`),
+or build and install it yourself. For a manual install:
+
+* Download the SDL2 source code package, it should be named `SDL2-VERSION.tar.gz`, and unpack it
+
+* Enter the `SDL-VERSION` directory and execute the following commands:
+
+(This proccess assumes that gcc/g++ and automake are properly installed)
+
+```
+mkdir build
+cd build
+../configure
+make
+sudo make install
+```
+
 2) Build the source
 
 ```
-cd SGB/ && make
+cd SGB/build/makefile
+make
 ```
 
 3) Install the library
@@ -38,7 +77,7 @@ A typical main loop file will look like this:
 
 // put your SGB_Display, SGB_Screen and SGB_LoadingScreen implementation includes here
 
-int main()
+int main(int argc, char** argv)
 {
 	bool isRunning = true;
 
@@ -71,7 +110,7 @@ contained in the `example` subdirectory.
 
 ##### Compile using the Makefile
 
-Execute `make buildexample` on the repository directory to build it. 
+Execute `make buildexample` on the `build/makefile` directory to build it. 
 In addition to SGB beign compiled and installed, the SDL2 library and include files must be accesible 
 for the compilation to succeed.
 
@@ -92,16 +131,24 @@ set on the `TestDisplay.cpp` file and build it again.
 
 The comments on the files are [Doxygen](http://www.stack.nl/~dimitri/doxygen/download.html)-compatible, and a Doxyfile is provided with the base configuration.
 
-Just execute `make docs` on the cloned directory to generate a HTML version of the documentation.
+Just execute `make docs` from the `build/makefile` directory to generate a HTML version of the documentation.
 
 The documentation will be located on the `doc/html` subdirectory. 
 Open the `index.html` page to access all the generated documentation.
+
+## Compiler Compatibility
+
+The build process was tested on the following platforms:
+
+* Custom ARM version based on Debian Linux on Next Thing Co.'s Pocket C.H.I.P., `uname -a` results in `Linux USER_NAME 4.4.13-ntc-mlc #1 SMP Thu Nov 3 01:28:54 UTC 2016 armv7l GNU/Linux` (Makefile)
+* x86 Ubuntu installed on a Virtual Machine, uname result: `Linux USER_NAME 4.8.0-22-generic #24-Ubuntu SMP Sat Oct 8 09:14:42 UTC 2016 i686 i686 i686 GNU/Linux` (Makefile)
+* x86 on Windows using Visual Studio 2015 Community, using SDL2 x86 pre-built binaries. Windows version 1607 (aka Windows 10)
 
 ## TODOs
 
 * Documentation on the private section of the classes and the new few public methods;
 * Review naming conventions for the entire project;
-* Check compatibility of the build process on other platforms (vs-c++, mingw);
+* Check compatibility on other platforms (MinGW, OSX, Android, Raspberry PI);
 
 ## External Resources
 

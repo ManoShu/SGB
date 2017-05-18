@@ -10,23 +10,28 @@ void TestScreen::LoadScreen()
 
 	SGB_LoadingScreenStatus loadingStatus;
 
-	for (int i = 0; i < 100; i++)
+	const int BAR_ITERATIONS = 1000;
+	const float BAR_ITERATIONS_F = BAR_ITERATIONS * 1.0f;
+	// the bar will scroll in 5 seconds
+	const int ITERATION_DELAY = 5000 / BAR_ITERATIONS;
+
+	for (int i = 0; i < BAR_ITERATIONS; i++)
 	{
-		loadingStatus.progress = (float)(i / 100.0);
-		sprintf(loadingStatus.status, "Loading %d %%...", i);
+		loadingStatus.progress = (float)(i / BAR_ITERATIONS_F);
+		snprintf(loadingStatus.status, SGB_LOADING_MESSAGE_SIZE, "Dummy loading %d of %d...", i, BAR_ITERATIONS);
 		PushLoadingStatus(loadingStatus);
-		SDL_Delay(50);
+		SDL_Delay(ITERATION_DELAY);
 	}
 
 	loadingStatus.progress = 1;
-	sprintf(loadingStatus.status, "Loading 100 %%... Done.");
+	snprintf(loadingStatus.status, SGB_LOADING_MESSAGE_SIZE, "Dummy loading done.");
 	PushLoadingStatus(loadingStatus);
 }
 
 void TestScreen::ScreenShow()
 {
 	_elapsedCounter = 0;
-	printf("Press ESC to finish.\n");
+	printf("Showing FPS as blocks. Press ESC to finish.\n");
 }
 
 void TestScreen::Update(Uint32 currentTime, Uint32 elapsed, float deltaT, Uint32 avgFPS, bool * isRunning)
@@ -54,7 +59,7 @@ void TestScreen::Update(Uint32 currentTime, Uint32 elapsed, float deltaT, Uint32
 	int i = 0, j = 0;
 
 	Uint32 fpsCounter = 0;
-	
+
 	while (fpsCounter < avgFPS)
 	{
 		if (i > 9)

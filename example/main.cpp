@@ -4,9 +4,9 @@
 #include "TestScreen.h"
 #include "TestLoading.h"
 
-int main()
+int main(int argc, char** argv)
 {
-	bool isRunning = true; 
+	bool isRunning = true;
 
 	TestDisplay myDisplay;
 
