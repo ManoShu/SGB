@@ -210,6 +210,13 @@ protected:
 	* \param screen The next SGB_Screen to be shown.
 	*
 	* A shortcut that calls SGB_Display::SetScreen().
+	*
+	* <b>WARNING:</b> When calling SetNextScreen(), make sure
+	* that there will be no more resources used until this screen's
+	* current update loop ends, as ScreenFinish() and
+	* UnloadScreen() will be called by the parent SGB_Display will 
+	* be called and there's no guarantee of the current loop 
+	* finishing before those calls. 
 	*/
 	void SetNextScreen(SGB_Screen* screen);
 

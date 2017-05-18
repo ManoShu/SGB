@@ -248,7 +248,6 @@ public:
 	*/
 	void Update(bool* isRunning);
 
-	//TODO: remark about code after SetNextScreen
 	/*! \brief Define what will be the next SGB_Screen to be shown.
 	*
 	*\param screen The SGB_Screen to be set.
@@ -256,6 +255,13 @@ public:
 	* If there's a previous SGB_Screen object beign used,
 	* it will automatically delete the instance.
 	*
+	* <b>WARNING:</b> When a SGB_Screen instance calls SetScreen(),
+	* normally by calling SGB_Screen::SetNextScreen(), make sure
+	* that there will be no more resources used until that screen's
+	* current update loop ends, as SGB_Screen::ScreenFinish() and
+	* SGB_Screen::UnloadScreen() will be called and there's no
+	* guarantee of the current loop finishing before those calls. 
+	* 
 	* If a loading screen is set, it will be shown
 	* until the \p screen object is fully loaded and
 	* the loading screen instance set the signal to proceed.
