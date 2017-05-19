@@ -9,7 +9,7 @@ class TestLoading :
 private:
 
 	virtual void ScreenShow() override;
-	virtual void Update(Uint32 currentTime, Uint32 elapsed, float deltaT, Uint32 avgFPS, bool * isRunning) override;
+	virtual void Update() override;
 
 	virtual bool CheckLoading(bool loadingFinished) override;
 

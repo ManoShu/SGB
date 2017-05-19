@@ -6,8 +6,6 @@
 
 int main(int argc, char** argv)
 {
-	bool isRunning = true;
-
 	TestDisplay myDisplay;
 
 	if (myDisplay.Init() != SGB_SUCCESS)
@@ -19,9 +17,9 @@ int main(int argc, char** argv)
 	myDisplay.SetLoadingScreen(new TestLoading());
 	myDisplay.SetScreen(new TestScreen());
 
-	while (isRunning)
+	while (myDisplay.IsRunning())
 	{
-		myDisplay.Update(&isRunning);
+		myDisplay.Update();
 	}
 
 	return 0;

@@ -21,6 +21,8 @@ SGB_Display::SGB_Display()
 	_finishedLoadingScreen.store(false);
 
 	_loadingThread = NULL;
+
+	_isRunning = true;
 }
 
 SGB_Display::~SGB_Display()
@@ -120,7 +122,7 @@ int SGB_Display::Init()
 	{
 		_initInfo.RendererFlags = _initInfo.RendererFlags | SDL_RENDERER_PRESENTVSYNC;
 	}
-	
+
 	_renderer = SDL_CreateRenderer(_window, _initInfo.RendererIndex, _initInfo.RendererFlags);
 
 	if (_renderer == NULL)
@@ -141,16 +143,17 @@ int SGB_Display::Init()
 	AfterInit();
 
 	fpsTimer.start();
-	currentTime = fpsTimer.getTicks();
+
+	_loopStats.TotalTicks = fpsTimer.getTicks();
 
 	return SGB_SUCCESS;
 }
 
-void SGB_Display::Update(bool* isRunning)
+void SGB_Display::Update()
 {
 	BeginUpdate();
 
-	Update(_currentScreen, isRunning);
+	Update(_currentScreen);
 
 	if (_loadingNextScreen)
 	{
@@ -178,10 +181,10 @@ void SGB_Display::Update(bool* isRunning)
 	{
 		if (_displayEvent.type == SDL_QUIT)
 		{
-			*isRunning = false;
+			StopRunning();
 		}
 
-		if (*isRunning == true)
+		if (IsRunning())
 		{
 			SDL_PushEvent(&_displayEvent);
 		}
@@ -254,7 +257,7 @@ int SGB_Display::ExecuteLoadingProcess(void* data)
 	t->_screenToBeLoaded->LoadScreen();
 
 	t->_finishedLoadingScreen.store(true);
-	
+
 	return 0;
 }
 
@@ -305,6 +308,16 @@ void SGB_Display::SetLoadingScreen(SGB_Screen* screen)
 	}
 }
 
+bool SGB_Display::IsRunning()
+{
+	return _isRunning;
+}
+
+void SGB_Display::StopRunning()
+{
+	_isRunning = false;
+}
+
 void SGB_Display::BeginUpdate()
 {
 	//Start cap timer
@@ -317,11 +330,11 @@ void SGB_Display::BeginUpdate()
 	}
 
 	Uint32 split = (1000 / _initInfo.FrameRateSamplesPerSecond);
-	Uint32 timeDiff = currentTime - lastCountReset;
+	Uint32 timeDiff = _loopStats.TotalTicks - lastCountReset;
 
 	if (timeDiff > split)
 	{
-		lastCountReset = currentTime - (timeDiff - split);
+		lastCountReset = _loopStats.TotalTicks - (timeDiff - split);
 
 		_fpsQueue.insert(_fpsQueue.end(), countedFrames);
 
@@ -330,7 +343,7 @@ void SGB_Display::BeginUpdate()
 			_fpsQueue.erase(_fpsQueue.begin());
 		}
 
-		avgFPS = std::accumulate(_fpsQueue.begin(), _fpsQueue.end(), (Uint32)0);
+		_loopStats.AverageFrameRate = std::accumulate(_fpsQueue.begin(), _fpsQueue.end(), (Uint32)0);
 
 		countedFrames = 0;
 	}
@@ -338,26 +351,23 @@ void SGB_Display::BeginUpdate()
 	Clear();
 }
 
-void SGB_Display::Update(SGB_Screen* menu, bool* isRunning)
+void SGB_Display::Update(SGB_Screen* menu)
 {
-	currentTime = fpsTimer.getTicks();
+	_loopStats.TotalTicks = fpsTimer.getTicks();
+	_loopStats.DeltaTicks = stepTimer.getTicks();
 
-	Uint32 elapsed = stepTimer.getTicks();
 	//Restart step timer so we can start counting again
 	stepTimer.start();
 
-	float deltaT = static_cast<float>(elapsed) / 1000.f;
+	_loopStats.DeltaSeconds = static_cast<float>(_loopStats.DeltaTicks) / 1000.f;
 
 	//Note that the time information is NOT updated in each call
-
-	BeginDraw(currentTime, elapsed, deltaT, avgFPS, isRunning);
-
+	BeginDraw();
 	if (menu != NULL)
 	{
-		menu->Update(currentTime, elapsed, deltaT, avgFPS, isRunning);
+		menu->Update();
 	}
-
-	EndDraw(currentTime, elapsed, deltaT, avgFPS, isRunning);
+	EndDraw();
 
 }
 
@@ -376,20 +386,7 @@ void SGB_Display::EndUpdate()
 	}
 }
 
-
-SDL_Color SGB_Display::GetColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
-{
-	SDL_Color color;
-
-	color.r = r;
-	color.g = g;
-	color.b = b;
-	color.a = a;
-
-	return color;
-}
-
-void SGB_Display::SetDefaultColor()
+void SGB_Display::ResetDrawColor()
 {
 	SetDrawColor(_initInfo.RendererDefaultDrawColor);
 }
@@ -417,13 +414,23 @@ SDL_Color SGB_Display::GetDrawColor()
 	return color;
 }
 
+SGB_DisplayInitInfo SGB_Display::GetDisplayInitInfo()
+{
+	return _initInfo;
+}
+
+SGB_DisplayLoopStats SGB_Display::GetLoopStats()
+{
+	return _loopStats;
+}
+
 void SGB_Display::Clear()
 {
 	SetDrawColor(_initInfo.RendererBackgroundColor);
 
 	SDL_RenderClear(_renderer);
 
-	SetDefaultColor();
+	ResetDrawColor();
 }
 
 void SGB_Display::UpdateDisplay()

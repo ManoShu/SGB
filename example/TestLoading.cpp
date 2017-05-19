@@ -3,13 +3,13 @@
 void TestLoading::ScreenShow()
 {
 	//A very noticeable Fuchsia
-	_rectColor = _display->GetColor(0xff, 0x00, 0xff, SDL_ALPHA_OPAQUE);
+	_rectColor = { 0xff, 0x00, 0xff, SDL_ALPHA_OPAQUE };
 	_lastProgress = 0;
 
 	printf("Executing dummy loading. Please wait...\n");
 }
 
-void TestLoading::Update(Uint32 currentTime, Uint32 elapsed, float deltaT, Uint32 avgFPS, bool * isRunning)
+void TestLoading::Update()
 {
 	//Checking and processing loading status
 	SGB_LoadingScreenStatus stats;
@@ -18,7 +18,7 @@ void TestLoading::Update(Uint32 currentTime, Uint32 elapsed, float deltaT, Uint3
 	//using if() may cause slow down status process if there is
 	//more than one new status per update cycle
 	while (PullLoadingStatus(&stats) == SGB_SUCCESS)
-	{		
+	{
 		//at each PROGRESS_THRESHOLD% we output the progress on the console
 		const int PROGRESS_THRESHOLD = 5;
 

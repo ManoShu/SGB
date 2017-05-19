@@ -30,7 +30,7 @@ void SGB_Screen::FillRect(SDL_Rect rect, SDL_Color color)
 void SGB_Screen::DrawRect(SDL_Rect rect, SDL_Color color)
 {
 	auto oldColor = _display->GetDrawColor();
-	
+
 	_display->SetDrawColor(color);
 
 	DrawRect(rect);
@@ -77,7 +77,8 @@ void SGB_Screen::SetNextScreen(SGB_Screen * screen)
 
 SDL_Color SGB_Screen::GetColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
-	return _display->GetColor(r, g, b, a);
+	SDL_Color c = { r, g, b, a };
+	return c;
 }
 
 void SGB_Screen::SetColor(SDL_Color color)

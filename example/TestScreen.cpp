@@ -34,14 +34,16 @@ void TestScreen::ScreenShow()
 	printf("Showing FPS as blocks. Press ESC to finish.\n");
 }
 
-void TestScreen::Update(Uint32 currentTime, Uint32 elapsed, float deltaT, Uint32 avgFPS, bool * isRunning)
+void TestScreen::Update()
 {
 	SDL_PumpEvents();
 
 	if (keyStates[SDL_SCANCODE_ESCAPE])
 	{
-		*isRunning = false;
+		_display->StopRunning();
 	}
+
+	auto stats = _display->GetLoopStats();
 
 	//Getting updated renderer dimensions
 	int curWidth, curHeight;
@@ -60,7 +62,7 @@ void TestScreen::Update(Uint32 currentTime, Uint32 elapsed, float deltaT, Uint32
 
 	Uint32 fpsCounter = 0;
 
-	while (fpsCounter < avgFPS)
+	while (fpsCounter < stats.AverageFrameRate)
 	{
 		if (i > 9)
 		{
@@ -81,7 +83,7 @@ void TestScreen::Update(Uint32 currentTime, Uint32 elapsed, float deltaT, Uint32
 	}
 
 
-	_elapsedCounter += deltaT;
+	_elapsedCounter += stats.DeltaSeconds;
 
 	//after 10 seconds has passed, change to another screen
 	if (_elapsedCounter >= 10)

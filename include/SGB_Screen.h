@@ -165,18 +165,9 @@ public:
 
 	/*! \brief Process a new loop iteration.
 	*
-	* \param currentTime The time in ticks (ms) since the SGB_Display had been intialized.
-	* \param elapsed The time in ticks (ms) since the last loop.
-	* \param deltaT The time in seconds since the last loop.
-	* \param avgFPS The last average FPS calculated
-	* \param isRunning Set to <b>true</b> to signal the main loop to exit.
-	*
-	* The SGB_Screen rendering will usually be done here, given the parameters telling
-	* how much time passed since the las iteration.
-	*
-	* The `isRunning` parameter can be set to true to normally signal the main loop to exit.
+	* The SGB_Screen rendering will usually be done here.
 	*/
-	virtual void Update(Uint32 currentTime, Uint32 elapsed, float deltaT, Uint32 avgFPS, bool* isRunning) = 0;
+	virtual void Update() = 0;
 
 	/*! \brief Prepare the screen to be changed to another one.
 	*
@@ -214,14 +205,13 @@ protected:
 	* <b>WARNING:</b> When calling SetNextScreen(), make sure
 	* that there will be no more resources used until this screen's
 	* current update loop ends, as ScreenFinish() and
-	* UnloadScreen() will be called by the parent SGB_Display will 
-	* be called and there's no guarantee of the current loop 
-	* finishing before those calls. 
+	* UnloadScreen() will be called by the parent SGB_Display will
+	* be called and there's no guarantee of the current loop
+	* finishing before those calls.
 	*/
 	void SetNextScreen(SGB_Screen* screen);
 
-	/*! \brief Gets a SDL_Color structure with the given RGBA values.
-	*
+	/*! \brief Builds a SDL_Color struct with the informed RGBA values.
 	* \param r Red value (0-255)
 	* \param g Green value (0-255)
 	* \param b Blue value (0-255)
@@ -229,7 +219,6 @@ protected:
 	*
 	* \returns A SDL_Color structure with the given fields filled.
 	*
-	* A shortcut that calls SGB_Display::GetColor().
 	* The alpha parameter defaults to SDL_ALPHA_OPAQUE ( 0xff , 255 ).
 	*/
 	SDL_Color GetColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a = SDL_ALPHA_OPAQUE);
