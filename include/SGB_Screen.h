@@ -139,27 +139,31 @@ public:
 	/*! \brief Destroys the SGB_Screen instance. */
 	virtual ~SGB_Screen();
 
-	/*! \brief Indicate to the SGB_Screen instance what instance of SGB_Display will handle it.
+	/*! \brief Indicate to the SGB_Screen instance what instance of 
+	 * SGB_Display will handle it.
 	*
-	* \param display The SGB_Display that will handle the SGB_Screen instance.
+	* \param display The SGB_Display that will handle the SGB_Screen 
+	* instance.
 	*
-	* The SGB_Screen::_display and SGB_Screen::_renderer are set at this moment,
-	* making any other methods being able to access those intances resources.
+	* The SGB_Screen::_display and SGB_Screen::_renderer are set at 
+	* this moment, making any other methods being able to access those 
+	* intances resources.
 	*/
 	void SetDisplay(SGB_Display* display);
 
 	/*! \brief Loads any resouces needed by the SGB_Screen.
 	*
-	* This method should be used to load all resource-heavy, time-consuming data,
-	* as this method and UnloadScreen() will be called in a separate thread, while
-	* a loading screen (if set) is shown during this process.
+	* This method should be used to load all resource-heavy, 
+	* time-consuming data, as this method and UnloadScreen() will be 
+	* called in a separate thread, while a loading screen (if set) is 
+	* shown during this process.
 	*/
 	virtual void LoadScreen() {};
 
 	/*! \brief Prepare the SGB_Screen to be displayed.
 	*
-	* Unlike LoadScreen(), this method is executed in the main thread, so it's recommended
-	* to keep it's processing load light and fast.
+	* Unlike LoadScreen(), this method is executed in the main thread, 
+	* so it's recommended to keep it's processing load light and fast.
 	*/
 	virtual void ScreenShow() {};
 
@@ -171,26 +175,31 @@ public:
 
 	/*! \brief Prepare the screen to be changed to another one.
 	*
-	* Use this method to stop any immediate processing the SGB_Screen might be doing,
-	* like a network request or thread execution.
+	* Use this method to stop any immediate processing the SGB_Screen 
+	* might be doing, like a network request or thread execution.
 	*
-	* This method is also run on the main thread, so it's wise to keep it light and return fast.
+	* This method is also run on the main thread, so it's wise to keep 
+	* it light and return fast.
 	*/
 	virtual void ScreenFinish() {};
 
 	/*! \brief Unloads any resources used by the SGB_Screen.
 	*
-	* Any heavy resource release process, such as flushing logs, save and closing file streams,
-	* should be done in this method, as, like LoadScreen(), it runs on a separate thread from the caller one.
+	* Any heavy resource release process, such as flushing logs, save 
+	* and closing file streams, should be done in this method, as, like 
+	* LoadScreen(), it runs on a separate thread from the caller one.
 	*/
 	virtual void UnloadScreen() {};
 
-	/*! \brief Connects a SGB_LoadingScreen's SGB_LoadingQueue to this SGB_Screen.
+	/*! \brief Connects a SGB_LoadingScreen's SGB_LoadingQueue to this 
+	 * SGB_Screen.
 	*
-	* \param loadingScreen The SGB_LoadingScreen being used while this SGB_Screen intance is loading.
+	* \param loadingScreen The SGB_LoadingScreen being used while this 
+	* SGB_Screen intance is loading.
 	*
-	* This method is not intended to be called manually, as it is executed when
-	* the SGB_Display is preparing to load a new SGB_Screen.
+	* This method is not intended to be called manually, as it is 
+	* executed when the SGB_Display is preparing to load a new 
+	* SGB_Screen.
 	*/
 	void SetLoadingQueue(SGB_Screen* loadingScreen);
 
@@ -221,7 +230,8 @@ protected:
 	*
 	* The alpha parameter defaults to SDL_ALPHA_OPAQUE ( 0xff , 255 ).
 	*/
-	SDL_Color GetColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a = SDL_ALPHA_OPAQUE);
+	SDL_Color GetColor(Uint8 r, Uint8 g, Uint8 b, 
+		Uint8 a = SDL_ALPHA_OPAQUE);
 
 	/*! \brief Sets the render color.
 	*
@@ -231,25 +241,41 @@ protected:
 	*/
 	void SetColor(SDL_Color color);
 
-	/*! \brief Renders a filled rectangle with the given color and position/dimension.
+	/*! \brief Renders a filled rectangle with the given color and 
+	 * position/dimension.
 	*
-	* \param rect The SDL_Rect position\\dimension where the rectangle will be rendered.
+	* \param rect The SDL_Rect position\\dimension where the rectangle 
+	* will be rendered.
 	* \param color The SDL_Color to be used to render the rectangle.
 	*
-	* Uses SGB_Display::GetDrawColor and SGB_Display::SetDrawColor to temporarily set the render color and
-	* draw a "full" rectangle, going back to the previous render color when done.
+	* Uses SGB_Display::GetDrawColor and SGB_Display::SetDrawColor to 
+	* temporarily set the render color and draw a "full" rectangle, 
+	* going back to the previous render color when done.
 	*/
 	void FillRect(SDL_Rect rect, SDL_Color color);
 
-	//TODO: doc
+	/*! \brief Renders a non-filled rectangle, using the current draw 
+	 * color.
+	 * 
+	 * \param rect The positions and size on where the rectangle will
+	 * be drawn.
+	 */ 
 	void DrawRect(SDL_Rect rect);
 
-	//TODO: doc
+	/*! \brief Renders a non-filled rectangle, using the given draw 
+	 * color.
+	 * 
+	 * \param rect The positions and size on where the rectangle will
+	 * be drawn.
+	 * \param color The color to be used to draw the rectangle.
+	 */
 	void DrawRect(SDL_Rect rect, SDL_Color color);
 
-	/*! \brief Renders a filled rectangle with the current render color and given position/dimension.
+	/*! \brief Renders a filled rectangle with the current render 
+	 * color and given position/dimension.
 	*
-	* \param rect The SDL_Rect position\\dimension where the rectangle will be rendered.
+	* \param rect The SDL_Rect position\\dimension where the rectangle 
+	* will be rendered.
 	*/
 	void FillRect(SDL_Rect rect);
 
@@ -258,10 +284,12 @@ protected:
 	* \param[out] width The current renderer width.
 	* \param[out] height The current renderer height.
 	*
-	* \returns <b>0</b> on success or a negative error code on failure; call SDL_GetError() for more information.
+	* \returns <b>0</b> on success or a negative error code on failure; 
+	* call SDL_GetError() for more information.
 	* [extracted from SDL's SDL_GetRendererOutputSize page]
 	*
-	* A short that calls and returns `SDL_GetRendererOutputSize(_renderer, width, height)`.
+	* A shortcut that calls and returns 
+	* `SDL_GetRendererOutputSize(_renderer, width, height)`.
 	*/
 	int GetRendererSize(int* width, int* height);
 
@@ -275,7 +303,8 @@ protected:
 	*/
 	void SetRect(SDL_Rect* rect, int x, int y, int width, int height);
 
-	/*! \brief Gets a SDL_Rect structure with then given x, y, width and height.
+	/*! \brief Gets a SDL_Rect structure with then given x, y, width 
+	 * and height.
 	*
 	* \param x The X position.
 	* \param y The Y position.
@@ -290,20 +319,25 @@ protected:
 	*
 	* \param status The message status to be sent.
 	*
-	* If SGB_Screen::_statusQueue is not NULL, the `status` message will be put at the end of the queue, being accessed
-	* by a SGB_LoadingScreen instance's SGB_LoadingScreen::PullLoadingStatus method.
+	* If SGB_Screen::_statusQueue is not NULL, the `status` message 
+	* will be put at the end of the queue, being accessed
+	* by a SGB_LoadingScreen instance's 
+	* SGB_LoadingScreen::PullLoadingStatus method.
 	*/
 	void PushLoadingStatus(SGB_LoadingScreenStatus status);
 
 	/*! \brief Holds the SGB_Display instance set by SetDisplay() */
 	SGB_Display* _display;
 
-	/*! \brief Holds the SDL_Renderer instance created by the SGB_Display set by SetDisplay() */
+	/*! \brief Holds the SDL_Renderer instance created by the 
+	 * SGB_Display set by SetDisplay() */
 	SDL_Renderer* _renderer;
 
-	/*! \brief Holds the SGB_LoadingQueue instance set by SetLoadingQueue().
+	/*! \brief Holds the SGB_LoadingQueue instance set by 
+	* SetLoadingQueue().
 	*
-	* The values is NULL if there is no SGB_LoadingScreen associated with this SGB_Screen instance.
+	* The value is NULL if there is no SGB_LoadingScreen associated 
+	* with this SGB_Screen instance.
 	*/
 	SGB_LoadingQueue* _statusQueue;
 

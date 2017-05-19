@@ -12,7 +12,8 @@
 
 class SGB_Screen;
 
-/*! \brief A class to initialize and manage SDL_Window, SDL_Renderer and SGB_Screen's
+/*! \brief A class to initialize and manage SDL_Window, SDL_Renderer 
+ * and SGB_Screen's
 *
 * Usage example:
 *
@@ -106,9 +107,11 @@ public:
 	*/
 	virtual ~SGB_Display();
 
-	/*! \brief Initialize the display instance, creating all SDL related objects.
+	/*! \brief Initialize the display instance, creating all SDL 
+	 * related objects.
 	*
-	* \returns <b>SGB_SUCCESS</b> if there's no problem, <b>SGB_FAIL</b> otherwise.
+	* \returns <b>SGB_SUCCESS</b> if there's no problem, 
+	* <b>SGB_FAIL</b> otherwise.
 	*
 	* Use SDL_GetError() to know what happened in case of failure.
 	*/
@@ -116,14 +119,12 @@ public:
 
 	/*! \brief Update all display data and attached SGB_Screen's.
 	*
-	*\param isRunning Set to <b>true</b> to signal the main loop to exit.
+	*\param isRunning Set to <b>true</b> to signal the main loop to 
+	* exit.
 	*
 	* Call regularly on your main loop in order to keep the current
 	* SGB_Screen updated
 	* and check for any loading that can be happening at the moment.
-	*
-	* The `isRunning` parameter can be used to indicate when to exit
-	* the main loop
 	*/
 	void Update();
 
@@ -150,7 +151,8 @@ public:
 	*/
 	void SetScreen(SGB_Screen* screen);
 
-	/*! \brief Set the loading screen to be used during regular SGB_Screen's.
+	/*! \brief Set the loading screen to be used during regular 
+	 * SGB_Screen's.
 	*
 	*\param screen The SGB_LoadingScreen to be set.
 	*
@@ -171,7 +173,8 @@ public:
 
 	/*! \brief Signalizes the SGB_Display to stop updating.
 	*
-	* This method does not free any resources, simply making `IsRunning()` start returning <b>false</b>.
+	* This method does not free any resources, simply making 
+	* `IsRunning()` start returning <b>false</b>.
 	*/
 	void StopRunning();
 
@@ -187,7 +190,8 @@ public:
 	*/
 	SDL_Renderer* GetRenderer();
 
-	/*! \brief Set the current render color to the `RendererDefaultDrawColor` defined on `Init()` */
+	/*! \brief Set the current render color to the 
+	 * `RendererDefaultDrawColor` defined on `Init()` */
 	void ResetDrawColor();
 
 	/*! \brief Set the current render color to the one informed.
@@ -202,7 +206,8 @@ public:
 	*/
 	SDL_Color GetDrawColor();
 
-	/*! \brief Gets a copy of the initialization data provided by `GetInitInfo()`.*/
+	/*! \brief Gets a copy of the initialization data provided by 
+	 * `GetInitInfo()`.*/
 	SGB_DisplayInitInfo GetDisplayInitInfo();
 
 	/*! \brief Gets a copy of the current loop cycle stats.*/
@@ -219,12 +224,13 @@ protected:
 	 */
 	virtual void BeforeInit() {};
 
-	/*! \brief Requests information about how the SGB_Display will be initialized.
+	/*! \brief Requests information about how the SGB_Display will be 
+	 * initialized.
 	*
 	* \returns The initialization info needed to complete Init().
 	*
-	* All classes inheriting from SGB_Display must provide the initialization info
-	* so that `Init()` can be completed.
+	* All classes inheriting from SGB_Display must provide the 
+	* initialization info so that `Init()` can be completed.
 	*/
 	virtual SGB_DisplayInitInfo GetInitInfo() = 0;
 
@@ -238,15 +244,19 @@ protected:
 	 */
 	virtual void AfterInit() {};
 
-	/*! \brief Allows to render BEFORE the current SGB_Screen (be a regular or loading screen) is rendered.
+	/*! \brief Allows to render BEFORE the current SGB_Screen 
+	 * (be a regular or loading screen) is rendered.
 	*
-	* Any rendering done in this moment, will appear "behind" what the current screen will render.
+	* Any rendering done in this moment, will appear "behind" what 
+	* the current screen will render.
 	*/
 	virtual void BeginDraw() {};
 
-	/*! \brief Allows to render AFTER the current SGB_Screen (be a regular or loading screen) is rendered.
+	/*! \brief Allows to render AFTER the current SGB_Screen 
+	 * (be a regular or loading screen) is rendered.
 	*
-	* Any rendering done in this moment, will appear "in front" of what the current screen renderer.
+	* Any rendering done in this moment, will appear "in front" of 
+	* what the current screen renderer.
 	*/
 	virtual void EndDraw() {};
 
@@ -256,16 +266,21 @@ protected:
 	/*! \brief Holds the SDL_Renderer instance created by `Init()` */
 	SDL_Renderer* _renderer;
 
-	/*! \brief Holds the initialization info provided by `GetInitInfo()` and used on `Init()` for later use.
+	/*! \brief Holds the initialization info provided by 
+	* `GetInitInfo()` and used on `Init()` for later use.
 	*
-	* Internally, after `Init()` is run, provides the sampling size for the FPS calculation (SGB_DisplayInitInfo::FrameRateSamplesPerSecond)
+	* Internally, after `Init()` is run, provides the sampling size
+	* for the FPS calculation 
+	* (SGB_DisplayInitInfo::FrameRateSamplesPerSecond)
 	*/
 	SGB_DisplayInitInfo _initInfo;
 
 	/*! \brief Hold information related to the current loop cycle.
 	*
-	* This structure is updated on the start of each loop cycle, storing data about that particular
-	* cycle, with the exception of SGB_DisplayLoopStats::AverageFPS, which is updated when the FPS calculation is done.
+	* This structure is updated on the start of each loop cycle, 
+	* storing data about that particular cycle, with the exception of 
+	* SGB_DisplayLoopStats::AverageFPS, which is updated when the 
+	* FPS calculation is done.
 	*/
 	SGB_DisplayLoopStats _loopStats;
 

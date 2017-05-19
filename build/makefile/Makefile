@@ -90,7 +90,7 @@ $(ALL_TYPE)
 
 clean:
 	$(info - Remove all .o [object] files)
-	@find . -name \*.o -type f -delete
+	@find $(SRC_DIRECTORY) -name \*.o -type f -delete
 
 # Clear Objects & Executables
 
