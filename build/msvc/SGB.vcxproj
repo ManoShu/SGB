@@ -135,6 +135,8 @@ nmake all
   <ItemGroup>
     <ClInclude Include="..\..\include\SGB.h" />
     <ClInclude Include="..\..\include\SGB_Display.h" />
+    <ClInclude Include="..\..\include\SGB_DisplayTimingManager.h" />
+    <ClInclude Include="..\..\include\SGB_DisplayLoadingManager.h" />
     <ClInclude Include="..\..\include\SGB_LoadingQueue.h" />
     <ClInclude Include="..\..\include\SGB_LoadingScreen.h" />
     <ClInclude Include="..\..\include\SGB_Queue.h" />
@@ -145,6 +147,8 @@ nmake all
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\SGB_Display.cpp" />
+    <ClCompile Include="..\..\src\SGB_DisplayLoadingManager.cpp" />
+    <ClCompile Include="..\..\src\SGB_DisplayTimingManager.cpp" />
     <ClCompile Include="..\..\src\SGB_LoadingScreen.cpp" />
     <ClCompile Include="..\..\src\SGB_Screen.cpp" />
     <ClCompile Include="..\..\src\SGB_Timer.cpp" />
