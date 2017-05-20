@@ -3,10 +3,10 @@
 void TestLoading::ScreenShow()
 {
 	//A very noticeable Fuchsia
-	_rectColor = { 0xff, 0x00, 0xff, SDL_ALPHA_OPAQUE };
+	_rectColor = GetColor(0xff, 0x00, 0xff);
 	_lastProgress = 0;
 
-	printf("Executing dummy loading. Please wait...\n");
+	printf("Executing test loading. Please wait...\n");
 }
 
 void TestLoading::Update()
@@ -15,8 +15,9 @@ void TestLoading::Update()
 	SGB_LoadingScreenStatus stats;
 
 	//Using a while() to process all queued status messages,
-	//using if() may cause slow down status process if there is
-	//more than one new status per update cycle
+	//using if() works however it may cause a slow down on the
+	//status process if there is more than one new status per
+	//loop cycle cycle.
 	while (PullLoadingStatus(&stats) == SGB_SUCCESS)
 	{
 		//at each PROGRESS_THRESHOLD% we output the progress on the console
@@ -35,19 +36,21 @@ void TestLoading::Update()
 
 	//Getting updated renderer dimensions
 	int curWidth, curHeight;
-	SDL_GetRendererOutputSize(_renderer, &curWidth, &curHeight);
+	GetRendererSize(&curWidth, &curHeight);
 
 	//The loading rect size will be:
 	//horizontal: 90% width + 5% margin on each side
 	//vertical: 10% height and 5% bottom margin
-	_rect.x = (int)(curWidth * 0.05);
-	_rect.h = (int)(curHeight * 0.10);
-	_rect.y = (int)(curHeight - _rect.h - (curHeight * 0.05));
-	_rect.w = (int)((curWidth * 0.9) * _lastProgress);
+	SetRect(&_rect,
+		(int)(curWidth * 0.05),
+		(int)(curHeight - _rect.h - (curHeight * 0.05)),
+		(int)((curWidth * 0.90) * _lastProgress),
+		(int)(curHeight * 0.10)
+		);
 
-	_display->SetDrawColor(_rectColor);
+	SetColor(_rectColor);
 
-	SDL_RenderFillRect(_renderer, &_rect);
+	FillRect(_rect);
 }
 
 bool TestLoading::CheckLoading(bool loadingFinished)

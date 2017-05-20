@@ -8,82 +8,17 @@ class SGB_Screen;
 
 /*! \brief A SGB_Screen used between regular SGB_Screen's loading process.
 *
-* Example usage:
-\code{.cpp}
-//In this example, the loading screen will simply show a bar at the bottom
-//of the screen based on the last progress status received and will
-//automatically proceeed when the loading process is finished.
+* <b>Example usage</b>:
+* In this example, the loading screen will simply show a bar at the bottom
+* of the screen based on the last progress status received and will
+* automatically proceeed when the loading process is finished.
 
-//>>>SampleLoading.h
+TestLoading.h
+\includelineno TestLoading.h
 
-#include "SGB.h"
+TestLoading.cpp
+\includelineno TestLoading.cpp
 
-class SampleLoading :
-	public SGB_LoadingScreen
-{
-
-	private:
-
-	virtual void ScreenShow() override;
-	virtual void Update(Uint32 currentTime, Uint32 elapsed, float deltaT, Uint32 avgFPS, bool * isRunning) override;
-
-	virtual bool CheckLoading(bool loadingFinished) override;
-
-	SDL_Rect _rect;
-	SDL_Color _rectColor;
-
-	float _lastProgress;
-};
-
-//>>>SampleLoading.cpp
-
-#include "SampleLoading.h"
-
-void SampleLoading::ScreenShow()
-{
-	//A very noticeable Fuchsia
-	_rectColor = _display->GetColor(0xff, 0x00, 0xff, SDL_ALPHA_OPAQUE);
-	_lastProgress = 0;
-}
-
-void SampleLoading::Update(Uint32 currentTime, Uint32 elapsed, float deltaT, Uint32 avgFPS, bool * isRunning)
-{
-	//Checking and processing loading status
-	SGB_LoadingScreenStatus stats;
-	if (PullLoadingStatus(&stats) == SGB_SUCCESS)
-	{
-		printf("Progress: %f, Status: %s\n", stats.progress, stats.status);
-		_lastProgress = stats.progress;
-	}
-
-	//Getting updated renderer dimensions
-	int curWidth, curHeight;
-	SDL_GetRendererOutputSize(_renderer, &curWidth, &curHeight);
-
-	//The loading rect size will be:
-	//horizontal: 90% width + 5% margin on each side
-	//vertical: 10% height and 5% bottom margin
-	_rect.x = (int)(curWidth * 0.05);
-	_rect.h = (int)(curHeight * 0.10);
-	_rect.y = (int)(curHeight - _rect.h - (curHeight * 0.05));
-	_rect.w = (int)((curWidth * 0.9) * _lastProgress);
-
-	_display->SetDrawColor(_rectColor);
-
-	SDL_RenderFillRect(_renderer, &_rect);
-}
-
-bool SampleLoading::CheckLoading(bool loadingFinished)
-{
-	if (loadingFinished)
-	{
-		return true;
-	}
-
-	return false;
-}
-
-\endcode
 */
 class SGB_LoadingScreen :
 	public SGB_Screen
@@ -126,7 +61,7 @@ protected:
 	*
 	* Returns SGB_SUCCESS if there is a new status message, that is set on `status`.
 	*\code{.cpp}
-	*	if (PullLoadingStatus(&stats) == SGB_SUCCESS)
+	*	while (PullLoadingStatus(&stats) == SGB_SUCCESS)
 	*	{
 	*		printf("Progress: %f, Status: %s\n", stats.progress, stats.status);
 	*	}

@@ -18,13 +18,13 @@ void TestScreen::LoadScreen()
 	for (int i = 0; i < BAR_ITERATIONS; i++)
 	{
 		loadingStatus.progress = (float)(i / BAR_ITERATIONS_F);
-		snprintf(loadingStatus.status, SGB_LOADING_MESSAGE_SIZE, "Dummy loading %d of %d...", i, BAR_ITERATIONS);
+		snprintf(loadingStatus.status, SGB_LOADING_MESSAGE_SIZE, "Test loading %d of %d...", i, BAR_ITERATIONS);
 		PushLoadingStatus(loadingStatus);
 		SDL_Delay(ITERATION_DELAY);
 	}
 
 	loadingStatus.progress = 1;
-	snprintf(loadingStatus.status, SGB_LOADING_MESSAGE_SIZE, "Dummy loading done.");
+	snprintf(loadingStatus.status, SGB_LOADING_MESSAGE_SIZE, "Test loading done.");
 	PushLoadingStatus(loadingStatus);
 }
 
@@ -43,7 +43,7 @@ void TestScreen::Update()
 		_display->StopRunning();
 	}
 
-	auto stats = _display->GetLoopStats();
+	SGB_DisplayLoopStats stats = _display->GetLoopStats();
 
 	//Getting updated renderer dimensions
 	int curWidth, curHeight;

@@ -2,6 +2,7 @@
 
 SGB_DisplayInitInfo TestDisplay::GetInitInfo()
 {
+	//! [SGB_DisplayInitInfo_example]
 	SGB_DisplayInitInfo info;
 
 	info.HandleSDLStartupAndFinish = true; //SGB_Display will manage SDL for you
@@ -19,9 +20,10 @@ SGB_DisplayInitInfo TestDisplay::GetInitInfo()
 	info.UnlockFrameRate = false;
 	info.UnlockFrameRateOnBattery = false;
 	info.FrameRateSamplesPerSecond = 10;
+	//The SDL_Color field are associated with a {r, g, b, a} set
 	info.RendererBackgroundColor = { 0xa0, 0xa0, 0xa0, 0xff };
 	info.RendererDefaultDrawColor = { 0x00, 0x00, 0x00, 0xff };
-
+	//! [SGB_DisplayInitInfo_example]
 	return info;
 }
 

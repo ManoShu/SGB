@@ -21,33 +21,12 @@ const int SGB_FAIL = -1;
 #define SGB_LOADING_MESSAGE_SIZE 255
 #endif
 
-/*! \brief Scruture defining how a SGB_Display will be initialized.
+/*! \brief Structure defining how a SGB_Display will be initialized.
 
 Example base values:
 
-\code{.cpp}
+\snippet TestDisplay.cpp SGB_DisplayInitInfo_example
 
-SGB_DisplayInitInfo info;
-
-info.HandleSDLStartupAndFinish = true;
-info.WindowTitle = "Window Title";
-info.WindowDefaultWidth = 640;
-info.WindowDefaultHeight = 480;
-info.TargetFrameRate = 30;
-info.RendererIndex = -1;
-info.RendererFlags = 0;
-info.RendererBlendMode = 0; //SDL_BlendMode::SDL_BLENDMODE_NONE;
-info.EnableVSync = false;
-info.BorderlessWindow = false;
-info.FullScreenWindow = false;
-info.UnlockFrameRate = false;
-info.UnlockFrameRateOnBattery = false;
-info.FrameRateSamplesPerSecond = 10;
-//the GetColor functions comes from SGB_Display::SetColor()
-info.RendererBackgroundColor = GetColor(0x00, 0x00, 0x00, 0xff);
-info.RendererDefaultDrawColor = GetColor(0xff, 0xff, 0xff, 0xff);
-
-\endcode
 */
 struct SGB_DisplayInitInfo
 {
@@ -142,6 +121,7 @@ public:
 	SDL_Color RendererDefaultDrawColor;
 };
 
+/*! \brief Structure used to hold information related to the current loop cycle of a `SGB_Display` .*/
 struct SGB_DisplayLoopStats {
 public:
 	/*! \brief Stores how much time has passed since the SGB_Display initialization */

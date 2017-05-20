@@ -7,16 +7,34 @@
 class SGB_Display;
 class SGB_Screen;
 
+/*! \brief Internal class. Handles the transtion process between `SGB_Screen`'s
+* for a `SGB_Display`.
+*/
 class SGB_DisplayLoadingManager
 {
 public:
 	SGB_DisplayLoadingManager();
 	~SGB_DisplayLoadingManager();
 
+	/*! \brief Sets the `SGB_Display` owner of the intance.
+	*
+	* Used to pass it to the next loading `SGB_Screen`.
+	*/
 	void SetOwner(SGB_Display* owner);
+
+	/*! \brief Sets the next `SGB_Screen` to be loaded, starting the loading process.*/
 	void SetScreen(SGB_Screen* screen);
+
+	/*! \brief Sets the `SGB_LoadingScreen` to be used between `SGB_Screen` transitions.
+	*
+	* If a previous `SGB_LoadingScreen` was set, it will be unloaded and freed.
+	*/
 	void SetLoadingScreen(SGB_Screen* screen);
+
+	/*! \brief During a loading process, checks for it's completion.*/
 	void Update();
+
+	/*! \brief Gets the screen to be used by the `SGB_Display` owner. */
 	SGB_Screen* GetCurrentScreen();
 
 private:

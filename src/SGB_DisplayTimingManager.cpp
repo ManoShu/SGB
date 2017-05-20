@@ -24,8 +24,9 @@ Uint32 SGB_DisplayTimingManager::StartGlobalTimer()
 	return fpsTimer.getTicks();
 }
 
-Uint32 SGB_DisplayTimingManager::CalculateAverageFPS(Uint32 currentTicks)
+Uint32 SGB_DisplayTimingManager::CalculateAverageFPS()
 {
+	auto currentTicks = GetGlobalTicks();
 	//Start cap timer
 	capTimer.start();
 

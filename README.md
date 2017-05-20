@@ -73,15 +73,14 @@ A typical main loop file will look like this:
 
 ```C++
 #include <cstdio>
-#include "SGB.h"
 
-// put your SGB_Display, SGB_Screen and SGB_LoadingScreen implementation includes here
+#include "Implemented_SGB_Display .h"
+#include "Implemented_SGB_Screen.h"
+#include "Implemented_SGB_LoadingScreen.h"
 
 int main(int argc, char** argv)
 {
-	bool isRunning = true;
-
-	Implemented_SGB_Display myDisplay;
+	Implemented_SGB_Display  myDisplay;
 
 	if (myDisplay.Init() != SGB_SUCCESS)
 	{
@@ -94,11 +93,11 @@ int main(int argc, char** argv)
 
 	myDisplay.SetScreen(new Implemented_SGB_Screen());
 
-	while (isRunning)
+	while (myDisplay.IsRunning())
 	{
-		myDisplay.Update(&isRunning);
+		myDisplay.Update();
 	}
-	
+
 	return 0;
 }
 ```
@@ -146,8 +145,7 @@ The build process was tested on the following platforms:
 
 ## TODOs
 
-* Documentation on the private section of the classes and the new few public methods;
-* Review naming conventions for the entire project;
+* Documentation on the private section of the classes and methods;
 * Check compatibility on other platforms (MinGW, OSX, Android, Raspberry PI);
 
 ## External Resources

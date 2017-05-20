@@ -153,6 +153,15 @@ nmake all
     <ClCompile Include="..\..\src\SGB_Screen.cpp" />
     <ClCompile Include="..\..\src\SGB_Timer.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\LICENSE.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\doc\Doxyfile" />
+    <None Include="..\..\README.md" />
+    <None Include="..\makefile\Makefile" />
+    <None Include="..\makefile\Makefile.conf" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -12,7 +12,7 @@
 #include <mutex>
 #include <condition_variable>
 
-/*! \brief A thread-safe implementation of std::queue
+/*! \brief Internal class. A thread-safe implementation of std::queue
 *
 * Based on https://github.com/juanchopanza/cppblog/blob/master/Concurrency/Queue/Queue.h
 */

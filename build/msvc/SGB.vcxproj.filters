@@ -69,4 +69,13 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\LICENSE.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\README.md" />
+    <None Include="..\..\doc\Doxyfile" />
+    <None Include="..\makefile\Makefile" />
+    <None Include="..\makefile\Makefile.conf" />
+  </ItemGroup>
 </Project>

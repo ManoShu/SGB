@@ -179,7 +179,7 @@ void SGB_Display::StopRunning()
 
 void SGB_Display::BeginUpdate()
 {
-	_loopStats.AverageFrameRate = _timingManager.CalculateAverageFPS(_loopStats.TotalTicks);
+	_loopStats.AverageFrameRate = _timingManager.CalculateAverageFPS();
 
 	Clear();
 }

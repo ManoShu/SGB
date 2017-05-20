@@ -19,80 +19,15 @@ class SGB_Screen;
 /*! \brief A class to initialize and manage SDL_Window, SDL_Renderer
  * and SGB_Screen's
 *
-* Usage example:
-*
-\code{.cpp}
-//In this example, the display will render perpendicular lines "behind" the screen and
-//diagonal ones on the "front"
+* <b>Usage example</b>: In this example, the `SGB_Display` implementation
+* will render perpendicular lines "behind" the screen and diagonal ones
+* on the "front":
 
-//>>>TestDisplay.h
+TestDisplay.h
+\includelineno TestDisplay.h
 
-#include "SGB.h"
-
-class TestDisplay :
-public SGB_Display
-{
-public:
-
-	virtual SGB_DisplayInitInfo GetInitInfo() override;
-
-	virtual void BeginDraw(Uint32 currentTime, Uint32 elapsed, float deltaT, Uint32 avgFPS, bool* isRunning);
-	virtual void EndDraw(Uint32 currentTime, Uint32 elapsed, float deltaT, Uint32 avgFPS, bool* isRunning);
-};
-
-//>>>TestDisplay.cpp
-
-#include "TestDisplay.h"
-
-SGB_DisplayInitInfo TestDisplay::GetInitInfo()
-{
-	SGB_DisplayInitInfo info;
-
-	info.HandleSDLStartupAndFinish = true;
-	info.WindowTitle = "Test Display";
-	info.WindowDefaultWidth = 320;
-	info.WindowDefaultHeight = 240;
-	info.TargetFrameRate = 60;
-	info.RendererIndex = -1;
-	info.RendererFlags = 0;
-	info.RendererBlendMode = SDL_BlendMode::SDL_BLENDMODE_NONE;
-	info.EnableVSync = true;
-	info.BorderlessWindow = false;
-	info.FullScreenWindow = false;
-	info.UnlockFrameRate = false;
-	info.UnlockFrameRateOnBattery = false;
-	info.FrameRateSamplesPerSecond = 10;
-	info.RendererBackgroundColor = GetColor(0xa0, 0xa0, 0xa0, 0xff);
-	info.RendererDefaultDrawColor = GetColor(0x00, 0x00, 0x00, 0xff);
-
-	return info;
-}
-
-void TestDisplay::BeginDraw(Uint32 currentTime, Uint32 elapsed, float deltaT, Uint32 avgFPS, bool * isRunning)
-{
-	SetDrawColor(_initInfo.RendererDefaultDrawColor);
-
-	//Getting current renderer size
-	int curWidth, curHeight;
-	SDL_GetRendererOutputSize(_renderer, &curWidth, &curHeight);
-
-	SDL_RenderDrawLine(_renderer, 0, curHeight / 2, curWidth, curHeight / 2);
-	SDL_RenderDrawLine(_renderer, curWidth / 2, 0, curWidth / 2, curHeight);
-}
-
-void TestDisplay::EndDraw(Uint32 currentTime, Uint32 elapsed, float deltaT, Uint32 avgFPS, bool * isRunning)
-{
-	SetDrawColor(_initInfo.RendererDefaultDrawColor);
-
-	//Getting current renderer size
-	int curWidth, curHeight;
-	SDL_GetRendererOutputSize(_renderer, &curWidth, &curHeight);
-
-	SDL_RenderDrawLine(_renderer, 0, 0, curWidth, curHeight);
-	SDL_RenderDrawLine(_renderer, 0, curHeight, curWidth, 0);
-}
-
-\endcode
+TestDisplay.cpp
+\includelineno TestDisplay.cpp
 */
 class SGB_Display
 {
@@ -123,12 +58,9 @@ public:
 
 	/*! \brief Update all display data and attached SGB_Screen's.
 	*
-	*\param isRunning Set to <b>true</b> to signal the main loop to
-	* exit.
-	*
 	* Call regularly on your main loop in order to keep the current
-	* SGB_Screen updated
-	* and check for any loading that can be happening at the moment.
+	* SGB_Screen updated and check for any loading that can be
+	* happening at the moment.
 	*/
 	void Update();
 
@@ -195,7 +127,7 @@ public:
 	SDL_Renderer* GetRenderer();
 
 	/*! \brief Set the current render color to the
-	 * `RendererDefaultDrawColor` defined on `Init()` */
+	 * `SGB_DisplayInitInfo::RendererDefaultDrawColor` defined on `Init()` */
 	void ResetDrawColor();
 
 	/*! \brief Set the current render color to the one informed.
@@ -283,7 +215,7 @@ protected:
 	*
 	* This structure is updated on the start of each loop cycle,
 	* storing data about that particular cycle, with the exception of
-	* SGB_DisplayLoopStats::AverageFPS, which is updated when the
+	* `SGB_DisplayLoopStats::AverageFPS`, which is updated when the
 	* FPS calculation is done.
 	*/
 	SGB_DisplayLoopStats _loopStats;

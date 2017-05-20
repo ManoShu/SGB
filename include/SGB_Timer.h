@@ -2,7 +2,7 @@
 
 #include "SGB_SDL.h"
 
-/*! \brief A stopwatch\\timer using SDL_GetTicks() as time source.
+/*! \brief Internal class. A stopwatch\\timer using SDL_GetTicks() as time source.
 *
 * Based on http://lazyfoo.net/tutorials/SDL/23_advanced_timers/index.php
 */
