@@ -12,6 +12,8 @@
 
 class SGB_Screen;
 
+//TODO: Try to insert the code from the example application on the documentation
+
 /*! \brief A class to initialize and manage SDL_Window, SDL_Renderer 
  * and SGB_Screen's
 *
@@ -286,63 +288,88 @@ protected:
 
 private:
 
+	/*! \brief Start preparing for updating the undelying SGB_Screen's.
+	 * 
+	 * This method is responsible for updating the average framerate
+	 * returned by `GetDisplayInitInfo()` and  calling `Clear()`.
+	 */
 	void BeginUpdate();
-	void Update(SGB_Screen* menu);
+	
+	/*! \brief Update cycle status and the current SGB_Screen.
+	 * 
+	 * \param screen The current SGB_Screen.
+	 * 
+	 * Here the calculations about the current loop cycle are done, as
+	 * well the for `BeginDraw()`, the current SGB_Screen's 
+	 * `SGB_Screen::Update()` and `EndDraw()`.
+	 */
+	void Update(SGB_Screen* screen);
+	
+	/*! \brief Finishes the rendering cycle, rendering on screen.
+	 * 
+	 *  This calls `UpdateDisplay()` and, when the framerate is not
+	 * unlocked, waits for any time left until the next cycle.
+	 */
 	void EndUpdate();
 
+	/*! \brief Start preparing the transition to a new `SGB_Screen`.
+	 * 
+	 * \param screen The next SGB_Screen to be loaded.
+	 * 
+	 * Here the current SGB_Screen (if exists) is set to be unloaded,
+	 * a `SGB_LoadingScreen` (if set) is set as the current screen.
+	 */
 	void PrepareToLoad(SGB_Screen * screen);
+	
+	/*! \brief Starts a thread calling `ExecuteLoadingProcess()`.
+	 * 
+	 * This thread call passes the current instance to the satic method
+	 * being called.
+	 */ 
 	void StartLoadingProcess();
+	
+	/*! \brief Manages the loading steps to load and unload SGB_Screen`s
+	 * as necessary.
+	 * 
+	 * This method unloads the previous screen, loads the next one and
+	 * flags _finishedLoadingScreen to <b>true</b> when finished.
+	 */
 	static int ExecuteLoadingProcess(void* data);
+	
+	/*! \brief Puts the newly loaded SGB_Screen as the current screen.
+	 * 
+	 * The auxiliary fields are cleared and the new SGB_Screen is set
+	 * as current screen to be shown and updated.
+	 */
 	void FinishLoadingProcess();
 
-
+	/*! \brief Fills the underlying renderer with the defined 
+	 * background color. */
 	void Clear();
+	
+	/*! \brief Updates the window with the underlying renderer. */
 	void UpdateDisplay();
+	
+	/*! \brief Tries to check if the application is running on a device
+	 * operation on batteries.
+	 * 
+	 * This check is to not spend too much resources unlocking
+	 * the framerate when there is a limited power supply, unless 
+	 * overriden. 
+	 */
 	bool SDL_RunningOnBattery();
 
+	/*! \brief Internal field to hold true until `StopRunning()` is
+	 * called.
+	 */
 	bool _isRunning;
 
-	//The frames per second timer
-	SGB_Timer fpsTimer;
+	/*! \brief Holds data related to loop cycle information. */
+	SGB_DisplayTimingData _timingData;
 
-	//The frames per second cap timer
-	SGB_Timer capTimer;
-
-	//Timer to measure how much time has passed since the last =BeginUpdate= happened
-	SGB_Timer stepTimer;
-
-	//Counter to accumulate how many frames have passed since the last FPS sampling
-	int countedFrames;
-
-	//Stores when the last FPS sampling happened
-	Uint32 lastCountReset;
-
-	//Stores how much time is expected to pass between frame rendering and calculation
-	int frameInterval;
-
-	//Store the last (_initInfo.FrameRateSamplesPerSecond) framecounts between FPS samplings
-	std::vector<Uint32> _fpsQueue;
-
-	//Stores the current SGB_Screen beign rendered at the moment
-	SGB_Screen* _currentScreen;
-
-	//Holds the instance of the current loading screen to be used during regular SGB_Screen changes
-	SGB_Screen* _currentLoadingScreen;
-
-	//Holds the instance of the last loaded SGB_Screen that will be unloaded to give place to the next one
-	SGB_Screen* _screenToBeUnloaded;
-
-	//Holds the instance of the next SGB_Screen that will have it's data loaded and then later
-	//be set as the current screen.
-	SGB_Screen* _screenToBeLoaded;
-
-	//Indicates if a loading routine is in progress.
-	bool _loadingNextScreen;
-
-	//Indicates if the loading process finished.
-	std::atomic<bool> _finishedLoadingScreen;
-
-	//Holds the thread being used to execute the loading process
-	SDL_Thread* _loadingThread;
+	/*! \brief Hold data related to the loading process between
+	 * SGB_Screen's.
+	 */
+	SGB_DisplayLoadingData _loadingData;
 };
 

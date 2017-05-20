@@ -1,5 +1,12 @@
 #pragma once
 
+#include <vector>
+#include <atomic>
+
+#include "SGB_Timer.h"
+
+class SGB_Screen;
+
 /*! \brief Indicates there was no problem executing a method. */
 const int SGB_SUCCESS = 0;
 
@@ -156,4 +163,55 @@ public:
 	/*! \brief Stores the last calculated average frame rate*/
 	Uint32 AverageFrameRate;
 
+};
+
+struct SGB_DisplayTimingData
+{
+public:
+	//The frames per second timer
+	SGB_Timer fpsTimer;
+
+	//The frames per second cap timer
+	SGB_Timer capTimer;
+
+	//Timer to measure how much time has passed since the last =BeginUpdate= happened
+	SGB_Timer stepTimer;
+
+	//Counter to accumulate how many frames have passed since the last FPS sampling
+	int countedFrames;
+
+	//Stores when the last FPS sampling happened
+	Uint32 lastCountReset;
+
+	//Stores how much time is expected to pass between frame rendering and calculation
+	int frameInterval;
+
+	//Store the last (_initInfo.FrameRateSamplesPerSecond) framecounts between FPS samplings
+	std::vector<Uint32> _fpsQueue;
+};
+
+struct SGB_DisplayLoadingData
+{
+public:
+//Stores the current SGB_Screen beign rendered at the moment
+	SGB_Screen* _currentScreen;
+
+	//Holds the instance of the current loading screen to be used during regular SGB_Screen changes
+	SGB_Screen* _currentLoadingScreen;
+
+	//Holds the instance of the last loaded SGB_Screen that will be unloaded to give place to the next one
+	SGB_Screen* _screenToBeUnloaded;
+
+	//Holds the instance of the next SGB_Screen that will have it's data loaded and then later
+	//be set as the current screen.
+	SGB_Screen* _screenToBeLoaded;
+
+	//Indicates if a loading routine is in progress.
+	bool _loadingNextScreen;
+
+	//Indicates if the loading process finished.
+	std::atomic<bool> _finishedLoadingScreen;
+
+	//Holds the thread being used to execute the loading process
+	SDL_Thread* _loadingThread;
 };

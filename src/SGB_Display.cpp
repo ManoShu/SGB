@@ -11,40 +11,40 @@ SGB_Display::SGB_Display()
 	_window = NULL;
 	_renderer = NULL;
 
-	_currentScreen =
-		_currentLoadingScreen =
-		_screenToBeUnloaded =
-		_screenToBeLoaded =
+	_loadingData._currentScreen =
+	_loadingData._currentLoadingScreen =
+	_loadingData._screenToBeUnloaded =
+	_loadingData._screenToBeLoaded =
 		NULL;
 
-	_loadingNextScreen = false;
-	_finishedLoadingScreen.store(false);
+	_loadingData._loadingNextScreen = false;
+	_loadingData._finishedLoadingScreen.store(false);
 
-	_loadingThread = NULL;
+	_loadingData._loadingThread = NULL;
 
 	_isRunning = true;
 }
 
 SGB_Display::~SGB_Display()
 {
-	if (_currentScreen != NULL)
+	if (_loadingData._currentScreen != NULL)
 	{
-		_currentScreen->UnloadScreen();
-		delete _currentScreen;
-		_currentScreen = NULL;
+		_loadingData._currentScreen->UnloadScreen();
+		delete _loadingData._currentScreen;
+		_loadingData._currentScreen = NULL;
 	}
 
-	if (_currentLoadingScreen != NULL)
+	if (_loadingData._currentLoadingScreen != NULL)
 	{
-		_currentLoadingScreen->UnloadScreen();
-		delete _currentLoadingScreen;
-		_currentLoadingScreen = NULL;
+		_loadingData._currentLoadingScreen->UnloadScreen();
+		delete _loadingData._currentLoadingScreen;
+		_loadingData._currentLoadingScreen = NULL;
 	}
 
-	if (_loadingThread != NULL)
+	if (_loadingData._loadingThread != NULL)
 	{
 		//delete _loadingThread;
-		_loadingThread = NULL;
+		_loadingData._loadingThread = NULL;
 	}
 
 	SDL_DestroyRenderer(_renderer);
@@ -136,15 +136,15 @@ int SGB_Display::Init()
 		return SGB_FAIL;
 	}
 
-	frameInterval = (1000 / _initInfo.TargetFrameRate);
-	countedFrames = 0;
-	lastCountReset = 0;
+	_timingData.frameInterval = (1000 / _initInfo.TargetFrameRate);
+	_timingData.countedFrames = 0;
+	_timingData.lastCountReset = 0;
 
 	AfterInit();
 
-	fpsTimer.start();
+	_timingData.fpsTimer.start();
 
-	_loopStats.TotalTicks = fpsTimer.getTicks();
+	_loopStats.TotalTicks = _timingData.fpsTimer.getTicks();
 
 	return SGB_SUCCESS;
 }
@@ -153,16 +153,16 @@ void SGB_Display::Update()
 {
 	BeginUpdate();
 
-	Update(_currentScreen);
+	Update(_loadingData._currentScreen);
 
-	if (_loadingNextScreen)
+	if (_loadingData._loadingNextScreen)
 	{
-		bool loadFinished = _finishedLoadingScreen.load();
+		bool loadFinished = _loadingData._finishedLoadingScreen.load();
 		bool proceedLoading = false;
 
-		if (_currentScreen != NULL)
+		if (_loadingData._currentScreen != NULL)
 		{
-			proceedLoading = ((SGB_LoadingScreen*)_currentScreen)->
+			proceedLoading = ((SGB_LoadingScreen*)_loadingData._currentScreen)->
 				CheckLoading(loadFinished);
 		}
 		else
@@ -205,37 +205,39 @@ SDL_Renderer* SGB_Display::GetRenderer()
 
 void SGB_Display::PrepareToLoad(SGB_Screen* screen)
 {
-	_screenToBeUnloaded = _currentScreen;
-	if (_screenToBeUnloaded != NULL)
+	_loadingData._screenToBeUnloaded = _loadingData._currentScreen;
+	if (_loadingData._screenToBeUnloaded != NULL)
 	{
-		_screenToBeUnloaded->ScreenFinish();
+		_loadingData._screenToBeUnloaded->ScreenFinish();
 	}
 
-	_screenToBeLoaded = screen;
+	_loadingData._screenToBeLoaded = screen;
 
-	_currentScreen = NULL;
+	_loadingData._currentScreen = NULL;
 
-	if (_currentLoadingScreen != NULL)
+	if (_loadingData._currentLoadingScreen != NULL)
 	{
-		_currentLoadingScreen->ScreenShow();
+		_loadingData._currentLoadingScreen->ScreenShow();
 
-		_currentScreen = _currentLoadingScreen;
+		_loadingData._currentScreen = _loadingData._currentLoadingScreen;
 	}
 
-	_screenToBeLoaded->SetLoadingQueue(_currentLoadingScreen);
+	_loadingData._screenToBeLoaded->SetLoadingQueue(
+		_loadingData._currentLoadingScreen);
 
-	_loadingNextScreen = true;
+	_loadingData._loadingNextScreen = true;
 
 }
 
 void SGB_Display::StartLoadingProcess()
 {
-	if (_loadingThread != NULL)
+	if (_loadingData._loadingThread != NULL)
 	{
 		//delete _loadingThread;
-		_loadingThread = NULL;
+		_loadingData._loadingThread = NULL;
 	}
-	_loadingThread = SDL_CreateThread(
+	
+	_loadingData._loadingThread = SDL_CreateThread(
 		SGB_Display::ExecuteLoadingProcess,
 		"SGB_LoadingThread",
 		(void*)this);
@@ -246,42 +248,42 @@ int SGB_Display::ExecuteLoadingProcess(void* data)
 {
 	auto t = (SGB_Display *)data;
 
-	if (t->_screenToBeUnloaded != NULL)
+	if (t->_loadingData._screenToBeUnloaded != NULL)
 	{
-		t->_screenToBeUnloaded->UnloadScreen();
-		delete t->_screenToBeUnloaded;
-		t->_screenToBeUnloaded = NULL;
+		t->_loadingData._screenToBeUnloaded->UnloadScreen();
+		delete t->_loadingData._screenToBeUnloaded;
+		t->_loadingData._screenToBeUnloaded = NULL;
 	}
 
-	t->_screenToBeLoaded->SetDisplay(t);
-	t->_screenToBeLoaded->LoadScreen();
+	t->_loadingData._screenToBeLoaded->SetDisplay(t);
+	t->_loadingData._screenToBeLoaded->LoadScreen();
 
-	t->_finishedLoadingScreen.store(true);
+	t->_loadingData._finishedLoadingScreen.store(true);
 
 	return 0;
 }
 
 void SGB_Display::FinishLoadingProcess()
 {
-	if (_screenToBeUnloaded != NULL)
+	if (_loadingData._screenToBeUnloaded != NULL)
 	{
-		delete _screenToBeUnloaded;
-		_screenToBeUnloaded = NULL;
+		delete _loadingData._screenToBeUnloaded;
+		_loadingData._screenToBeUnloaded = NULL;
 	}
 
-	if (_loadingThread != NULL)
+	if (_loadingData._loadingThread != NULL)
 	{
-		SDL_WaitThread(_loadingThread,NULL);
+		SDL_WaitThread(_loadingData._loadingThread,NULL);
 	}
 
-	_currentScreen = _screenToBeLoaded;
+	_loadingData._currentScreen = _loadingData._screenToBeLoaded;
 
-	_currentScreen->ScreenShow();
+	_loadingData._currentScreen->ScreenShow();
 
-	_screenToBeLoaded = NULL;
+	_loadingData._screenToBeLoaded = NULL;
 
-	_loadingNextScreen = false;
-	_finishedLoadingScreen.store(false);
+	_loadingData._loadingNextScreen = false;
+	_loadingData._finishedLoadingScreen.store(false);
 }
 
 void SGB_Display::SetScreen(SGB_Screen * screen)
@@ -292,19 +294,19 @@ void SGB_Display::SetScreen(SGB_Screen * screen)
 
 void SGB_Display::SetLoadingScreen(SGB_Screen* screen)
 {
-	if (_currentLoadingScreen != NULL)
+	if (_loadingData._currentLoadingScreen != NULL)
 	{
-		_currentLoadingScreen->ScreenFinish();
-		_currentLoadingScreen->UnloadScreen();
-		delete _currentLoadingScreen;
+		_loadingData._currentLoadingScreen->ScreenFinish();
+		_loadingData._currentLoadingScreen->UnloadScreen();
+		delete _loadingData._currentLoadingScreen;
 	}
 
-	_currentLoadingScreen = screen;
+	_loadingData._currentLoadingScreen = screen;
 
-	if (_currentLoadingScreen != NULL)
+	if (_loadingData._currentLoadingScreen != NULL)
 	{
-		_currentLoadingScreen->SetDisplay(this);
-		_currentLoadingScreen->LoadScreen();
+		_loadingData._currentLoadingScreen->SetDisplay(this);
+		_loadingData._currentLoadingScreen->LoadScreen();
 	}
 }
 
@@ -321,7 +323,7 @@ void SGB_Display::StopRunning()
 void SGB_Display::BeginUpdate()
 {
 	//Start cap timer
-	capTimer.start();
+	_timingData.capTimer.start();
 
 	//Calculate and correct fps
 	if (_initInfo.FrameRateSamplesPerSecond < 1)
@@ -330,42 +332,48 @@ void SGB_Display::BeginUpdate()
 	}
 
 	Uint32 split = (1000 / _initInfo.FrameRateSamplesPerSecond);
-	Uint32 timeDiff = _loopStats.TotalTicks - lastCountReset;
+	Uint32 timeDiff = _loopStats.TotalTicks - _timingData.lastCountReset;
 
 	if (timeDiff > split)
 	{
-		lastCountReset = _loopStats.TotalTicks - (timeDiff - split);
+		_timingData.lastCountReset = _loopStats.TotalTicks - (timeDiff - split);
 
-		_fpsQueue.insert(_fpsQueue.end(), countedFrames);
+		_timingData._fpsQueue.insert(
+			_timingData._fpsQueue.end(), 
+			_timingData.countedFrames);
 
-		if (_fpsQueue.size() > _initInfo.FrameRateSamplesPerSecond)
+		if (_timingData._fpsQueue.size() > _initInfo.FrameRateSamplesPerSecond)
 		{
-			_fpsQueue.erase(_fpsQueue.begin());
+			_timingData._fpsQueue.erase(
+				_timingData._fpsQueue.begin());
 		}
 
-		_loopStats.AverageFrameRate = std::accumulate(_fpsQueue.begin(), _fpsQueue.end(), (Uint32)0);
+		_loopStats.AverageFrameRate = std::accumulate(
+			_timingData._fpsQueue.begin(), 
+			_timingData._fpsQueue.end(), 
+			(Uint32)0);
 
-		countedFrames = 0;
+		_timingData.countedFrames = 0;
 	}
 
 	Clear();
 }
 
-void SGB_Display::Update(SGB_Screen* menu)
+void SGB_Display::Update(SGB_Screen* screen)
 {
-	_loopStats.TotalTicks = fpsTimer.getTicks();
-	_loopStats.DeltaTicks = stepTimer.getTicks();
+	_loopStats.TotalTicks = _timingData.fpsTimer.getTicks();
+	_loopStats.DeltaTicks = _timingData.stepTimer.getTicks();
 
 	//Restart step timer so we can start counting again
-	stepTimer.start();
+	_timingData.stepTimer.start();
 
 	_loopStats.DeltaSeconds = static_cast<float>(_loopStats.DeltaTicks) / 1000.f;
 
 	//Note that the time information is NOT updated in each call
 	BeginDraw();
-	if (menu != NULL)
+	if (screen != NULL)
 	{
-		menu->Update();
+		screen->Update();
 	}
 	EndDraw();
 
@@ -375,14 +383,14 @@ void SGB_Display::EndUpdate()
 {
 	UpdateDisplay();
 
-	++countedFrames;
+	++_timingData.countedFrames;
 
 	//If frame finished early
-	int frameTicks = capTimer.getTicks();
-	if (!_initInfo.UnlockFrameRate && frameTicks < frameInterval)
+	int frameTicks = _timingData.capTimer.getTicks();
+	if (!_initInfo.UnlockFrameRate && frameTicks < _timingData.frameInterval)
 	{
 		//Wait remaining time
-		SDL_Delay(frameInterval - frameTicks);
+		SDL_Delay(_timingData.frameInterval - frameTicks);
 	}
 }
 
