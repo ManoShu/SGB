@@ -1,4 +1,4 @@
-#If you are not bound to SDL, go use [SFML](https://www.sfml-dev.org/), it's way more feature complete, organized and maintained. 
+# If you are not bound to SDL, go use [SFML](https://www.sfml-dev.org/), it's way more feature complete, organized and maintained. 
 
 This library sucks compared to theirs and will not be updated anymore.
 
