@@ -85,7 +85,7 @@ int SGB_Display::Init()
 	}
 
 	//checking battery status
-	if (_initInfo.UnlockFrameRate && SDL_RunningOnBattery() && !_initInfo.UnlockFrameRateOnBattery)
+	if (_initInfo.UnlockFrameRate && IsRunningOnBattery() && !_initInfo.UnlockFrameRateOnBattery)
 	{
 		_initInfo.UnlockFrameRate = false;
 	}
@@ -263,7 +263,7 @@ void SGB_Display::UpdateDisplay()
 	SDL_RenderPresent(_renderer);
 }
 
-bool SGB_Display::SDL_RunningOnBattery()
+bool SGB_Display::IsRunningOnBattery()
 {
 	return SDL_GetPowerInfo(NULL, NULL) == SDL_POWERSTATE_ON_BATTERY;
 }

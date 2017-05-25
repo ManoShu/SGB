@@ -262,7 +262,7 @@ private:
 	 * the framerate when there is a limited power supply, unless
 	 * overriden.
 	 */
-	bool SDL_RunningOnBattery();
+	bool IsRunningOnBattery();
 
 	/*! \brief Internal field to hold true until `StopRunning()` is
 	 * called.
