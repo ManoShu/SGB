@@ -1,7 +1,3 @@
-# If you are not bound to SDL, go use [SFML](https://www.sfml-dev.org/), it's way more feature complete, organized and maintained. 
-
-This library sucks compared to theirs and will not be updated anymore.
-
 ## SGB - SDL2 Graphical Bootstrapper
 
 ## Objective
@@ -110,6 +106,8 @@ int main(int argc, char** argv)
 
 An simple application using the complete SGB library is 
 contained in the `example` subdirectory.
+
+Also, the `boilerplate` directory contains the basic structure to create your own application. 
 
 ##### Compile using the Makefile
 
