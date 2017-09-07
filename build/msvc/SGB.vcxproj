@@ -142,7 +142,6 @@ nmake all
     <ClInclude Include="..\..\include\SGB_Queue.h" />
     <ClInclude Include="..\..\include\SGB_Screen.h" />
     <ClInclude Include="..\..\include\SGB_SDL.h" />
-    <ClInclude Include="..\..\include\SGB_Timer.h" />
     <ClInclude Include="..\..\include\SGB_types.h" />
   </ItemGroup>
   <ItemGroup>
@@ -151,7 +150,6 @@ nmake all
     <ClCompile Include="..\..\src\SGB_DisplayTimingManager.cpp" />
     <ClCompile Include="..\..\src\SGB_LoadingScreen.cpp" />
     <ClCompile Include="..\..\src\SGB_Screen.cpp" />
-    <ClCompile Include="..\..\src\SGB_Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\LICENSE.txt" />
