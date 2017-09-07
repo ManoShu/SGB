@@ -18,14 +18,22 @@ void TestScreen::LoadScreen()
 	for (int i = 0; i < BAR_ITERATIONS; i++)
 	{
 		loadingStatus.progress = (float)(i / BAR_ITERATIONS_F);
-		snprintf(loadingStatus.status, SGB_LOADING_MESSAGE_SIZE, "Test loading %d of %d...", i, BAR_ITERATIONS);
+		snprintf(
+			loadingStatus.status, 
+			SGB_LOADING_MESSAGE_SIZE, 
+			"Test loading %d of %d...", 
+			i, BAR_ITERATIONS);
 		PushLoadingStatus(loadingStatus);
 		SDL_Delay(ITERATION_DELAY);
 	}
 
 	loadingStatus.progress = 1;
-	snprintf(loadingStatus.status, SGB_LOADING_MESSAGE_SIZE, "Test loading done.");
+	snprintf(
+		loadingStatus.status, 
+		SGB_LOADING_MESSAGE_SIZE, 
+		"Test loading done.");
 	PushLoadingStatus(loadingStatus);
+	SDL_Delay(ITERATION_DELAY);
 }
 
 void TestScreen::ScreenShow()
@@ -42,8 +50,23 @@ void TestScreen::Update()
 	{
 		_display->StopRunning();
 	}
-
+	
 	SGB_DisplayLoopStats stats = _display->GetLoopStats();
+
+	_elapsedCounter += stats.DeltaSeconds;
+
+	//after 10 seconds has passed, change to another screen
+	if (_elapsedCounter >= 10)
+	{
+		SetNextScreen(new TestScreen());
+	}
+}
+
+void TestScreen::Draw()
+{
+	SGB_DisplayLoopStats stats = _display->GetLoopStats();
+
+	//printf("FPS: %u\n",stats.AverageFrameRate);
 
 	//Getting updated renderer dimensions
 	int curWidth, curHeight;
@@ -80,15 +103,6 @@ void TestScreen::Update()
 
 		i++;
 		fpsCounter++;
-	}
-
-
-	_elapsedCounter += stats.DeltaSeconds;
-
-	//after 10 seconds has passed, change to another screen
-	if (_elapsedCounter >= 10)
-	{
-		SetNextScreen(new TestScreen());
 	}
 }
 

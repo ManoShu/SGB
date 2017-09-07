@@ -8,4 +8,3 @@
 #include "SGB_Screen.h"
 #include "SGB_LoadingScreen.h"
 #include "SGB_LoadingQueue.h"
-#include "SGB_Timer.h"

@@ -3,7 +3,7 @@
 #include <vector>
 #include <atomic>
 
-#include "SGB_Timer.h"
+#include "SGB_SDL.h"
 
 class SGB_Screen;
 

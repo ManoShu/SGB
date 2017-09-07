@@ -9,7 +9,7 @@ SGB_DisplayInitInfo TestDisplay::GetInitInfo()
 	info.WindowTitle = "Example Display";
 	info.WindowDefaultWidth = 300;
 	info.WindowDefaultHeight = 200;
-	info.TargetFrameRate = 60;// in frames per second
+	info.TargetFrameRate = 30;// in frames per second
 	info.RendererIndex = -1; //auto-select renderer
 	info.RendererFlags = 0; //no renderer requirements
 	//for more simple and fast rendering

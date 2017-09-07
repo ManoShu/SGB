@@ -40,12 +40,10 @@ public:
 private:
 	/*! \brief Start preparing the transition to a new `SGB_Screen`.
 	*
-	* \param screen The next SGB_Screen to be loaded.
-	*
 	* Here the current SGB_Screen (if exists) is set to be unloaded,
 	* a `SGB_LoadingScreen` (if set) is set as the current screen.
 	*/
-	void PrepareToLoad(SGB_Screen* screen);
+	void PrepareToLoad();
 
 	/*! \brief Starts a thread calling `ExecuteLoadingProcess()`.
 	*

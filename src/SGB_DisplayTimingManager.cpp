@@ -2,50 +2,42 @@
 
 #include <numeric>
 
-SGB_DisplayTimingManager::SGB_DisplayTimingManager()
-{
-}
-
-SGB_DisplayTimingManager::~SGB_DisplayTimingManager()
-{
-}
-
 void SGB_DisplayTimingManager::Setup(SGB_DisplayInitInfo info)
 {
 	_initInfo = info;
-	frameInterval = (1000 / _initInfo.TargetFrameRate);
-	countedFrames = 0;
-	lastCountReset = 0;
 }
 
 Uint32 SGB_DisplayTimingManager::StartGlobalTimer()
 {
-	fpsTimer.start();
-	return fpsTimer.getTicks();
+	_currentTime = SDL_GetTicks();
+	_totalElapsed = 0;
+	_loopElapsed = 0;
+	_lastFPSReset = _currentTime;
+	_currentAverageFPS = 0;
+	
+	_frameInterval = (1000 / _initInfo.TargetFrameRate);
+	
+	return _currentTime;
 }
 
 Uint32 SGB_DisplayTimingManager::CalculateAverageFPS()
 {
-	auto currentTicks = GetGlobalTicks();
-	//Start cap timer
-	capTimer.start();
-
 	//Calculate and correct fps
 	Uint32 split = (1000 / _initInfo.FrameRateSamplesPerSecond);
-	Uint32 timeDiff = currentTicks - lastCountReset;
+	
+	auto timeDiff = _currentTime - _lastFPSReset;
 
 	if (timeDiff > split)
 	{
-		lastCountReset = currentTicks - (timeDiff - split);
+		auto spareTime = (timeDiff - split);
+		
+		_lastFPSReset = _currentTime - spareTime;
 
-		_fpsQueue.insert(
-			_fpsQueue.end(),
-			countedFrames);
+		_fpsQueue.insert(_fpsQueue.end(),countedFrames);
 
 		if (_fpsQueue.size() > _initInfo.FrameRateSamplesPerSecond)
 		{
-			_fpsQueue.erase(
-				_fpsQueue.begin());
+			_fpsQueue.erase(_fpsQueue.begin());
 		}
 
 		_currentAverageFPS = std::accumulate(
@@ -55,34 +47,46 @@ Uint32 SGB_DisplayTimingManager::CalculateAverageFPS()
 
 		countedFrames = 0;
 	}
-
+	
 	return _currentAverageFPS;
 }
 
 Uint32 SGB_DisplayTimingManager::GetGlobalTicks()
 {
-	return fpsTimer.getTicks();
+	return _currentTime;
 }
 
 Uint32 SGB_DisplayTimingManager::GetDeltaTicks()
 {
-	return stepTimer.getTicks();
+	return _loopElapsed;
 }
 
-void SGB_DisplayTimingManager::ResetDeltaTimer()
+void SGB_DisplayTimingManager::UpdateFrameData()
 {
-	stepTimer.start();
+	auto theTime = SDL_GetTicks();
+	_loopElapsed = theTime - _currentTime;
+	_currentTime = theTime;
 }
 
-void SGB_DisplayTimingManager::FinishCycle()
+bool SGB_DisplayTimingManager::CanRender()
 {
-	++countedFrames;
+	auto result = false;
+	
+	_totalElapsed += _loopElapsed;
 
-	//If frame finished early
-	auto frameTicks = capTimer.getTicks();
-	if (!_initInfo.UnlockFrameRate && frameTicks < frameInterval)
+	if (_totalElapsed >= _frameInterval || _initInfo.UnlockFrameRate)
 	{
-		//Wait remaining time
-		SDL_Delay(frameInterval - frameTicks);
+		++countedFrames;
+		
+		result = true;
+		
+		_totalElapsed -= _frameInterval;
+
+		//if (_totalElapsed > _frameInterval)
+		//{
+		//	SDL_Log("Performance warning, rendering or update took too long");
+		//}
 	}
+	
+	return result;
 }

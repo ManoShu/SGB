@@ -33,7 +33,16 @@ void TestLoading::Update()
 
 		_lastProgress = stats.progress;
 	}
+}
 
+bool TestLoading::CheckLoading(bool loadingFinished)
+{
+	//we dont need user interaction, so proceed ASAP
+	return loadingFinished;
+}
+
+void TestLoading::Draw()
+{
 	//Getting updated renderer dimensions
 	int curWidth, curHeight;
 	GetRendererSize(&curWidth, &curHeight);
@@ -51,15 +60,4 @@ void TestLoading::Update()
 	SetColor(_rectColor);
 
 	FillRect(_rect);
-}
-
-bool TestLoading::CheckLoading(bool loadingFinished)
-{
-	if (loadingFinished)
-	{
-		//we dont need user interaction, so proceed ASAP
-		return true;
-	}
-
-	return false;
 }

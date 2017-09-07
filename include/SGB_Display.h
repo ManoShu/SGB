@@ -8,7 +8,6 @@
 
 #include "SGB_types.h"
 #include "SGB_Screen.h"
-#include "SGB_Timer.h"
 #include "SGB_DisplayLoadingManager.h"
 #include "SGB_DisplayTimingManager.h"
 
@@ -222,38 +221,29 @@ protected:
 
 private:
 
-	/*! \brief Start preparing for updating the undelying SGB_Screen's.
-	 *
-	 * This method is responsible for updating the average framerate
-	 * returned by `GetDisplayInitInfo()` and  calling `Clear()`.
-	 */
-	void BeginUpdate();
-
 	/*! \brief Update cycle status and the current SGB_Screen.
 	 *
 	 * \param screen The current SGB_Screen.
 	 *
 	 * Here the calculations about the current loop cycle are done, as
-	 * well the for `BeginDraw()`, the current SGB_Screen's
-	 * `SGB_Screen::Update()` and `EndDraw()`.
+	 * well the call for the current SGB_Screen's
+	 * `SGB_Screen::Update()`.
 	 */
-	void Update(SGB_Screen* screen);
-
-	/*! \brief Finishes the rendering cycle, rendering on screen.
+	void UpdateScreen(SGB_Screen* screen);
+	
+	/*! \brief Render the current SGB_Screen.
 	 *
-	 *  This calls `UpdateDisplay()` and, when the framerate is not
-	 * unlocked, waits for any time left until the next cycle.
+	 * \param screen The current SGB_Screen.
+	 *
+	 * Here the drawing calls are done: starting with
+	 * `BeginDraw()`, the current SGB_Screen's
+	 * `SGB_Screen::Draw()` and then `EndDraw()`.
 	 */
-	void EndUpdate();
-
-
+	void RenderScreen(SGB_Screen* screen);
 
 	/*! \brief Fills the underlying renderer with the defined
 	 * background color. */
 	void Clear();
-
-	/*! \brief Updates the window with the underlying renderer. */
-	void UpdateDisplay();
 
 	/*! \brief Tries to check if the application is running on a device
 	 * operation on batteries.

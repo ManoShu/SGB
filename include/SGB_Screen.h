@@ -62,11 +62,14 @@ public:
 	*/
 	virtual void ScreenShow() {};
 
-	/*! \brief Process a new loop iteration.
+	/*! \brief Process a delta-time iteration.
 	*
-	* The SGB_Screen rendering will usually be done here.
+	* The SGB_Screen's logic calculations will usually be done here.
 	*/
 	virtual void Update() = 0;
+	
+	/*! \brief Draws the SGB_Screen visual content. */
+	virtual void Draw() {};
 
 	/*! \brief Prepare the screen to be changed to another one.
 	*

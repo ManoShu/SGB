@@ -10,7 +10,7 @@ private:
 
 	virtual void ScreenShow() override;
 	virtual void Update() override;
-
+	virtual void Draw() override;
 	virtual bool CheckLoading(bool loadingFinished) override;
 
 	SDL_Rect _rect;

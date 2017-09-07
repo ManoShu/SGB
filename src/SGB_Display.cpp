@@ -5,14 +5,12 @@
 #include <algorithm>
 #include <thread>
 
-
 SGB_Display::SGB_Display()
 {
 	_window = NULL;
 	_renderer = NULL;
 
 	_loadingManager.SetOwner(this);
-	//_timingManager.SetOwner(this)
 
 	_isRunning = true;
 }
@@ -123,11 +121,12 @@ int SGB_Display::Init()
 
 void SGB_Display::Update()
 {
-	BeginUpdate();
-
-	Update(_loadingManager.GetCurrentScreen());
-
 	_loadingManager.Update();
+	
+	auto screen = _loadingManager.GetCurrentScreen(); 
+
+	UpdateScreen(screen);
+	RenderScreen(screen);
 
 	SDL_Event _displayEvent;
 
@@ -143,8 +142,6 @@ void SGB_Display::Update()
 			SDL_PushEvent(&_displayEvent);
 		}
 	}
-
-	EndUpdate();
 }
 
 SDL_Window* SGB_Display::GetWindow()
@@ -177,38 +174,40 @@ void SGB_Display::StopRunning()
 	_isRunning = false;
 }
 
-void SGB_Display::BeginUpdate()
+void SGB_Display::UpdateScreen(SGB_Screen* screen)
 {
-	_loopStats.AverageFrameRate = _timingManager.CalculateAverageFPS();
-
-	Clear();
-}
-
-void SGB_Display::Update(SGB_Screen* screen)
-{
+	_timingManager.UpdateFrameData();
+	
+	_loopStats.AverageFrameRate = 
+		_timingManager.CalculateAverageFPS();
+	
 	_loopStats.TotalTicks = _timingManager.GetGlobalTicks();
 	_loopStats.DeltaTicks = _timingManager.GetDeltaTicks();
 
-	//Restart step timer so we can start counting again
-	_timingManager.ResetDeltaTimer();
+	_loopStats.DeltaSeconds = 
+		static_cast<float>(_loopStats.DeltaTicks) / 1000.f;
 
-	_loopStats.DeltaSeconds = static_cast<float>(_loopStats.DeltaTicks) / 1000.f;
-
-	//Note that the time information is NOT updated in each call
-	BeginDraw();
 	if (screen != NULL)
 	{
 		screen->Update();
 	}
-	EndDraw();
-
 }
 
-void SGB_Display::EndUpdate()
+void SGB_Display::RenderScreen(SGB_Screen* screen)
 {
-	UpdateDisplay();
-
-	_timingManager.FinishCycle();
+	if(_timingManager.CanRender())
+	{
+		Clear();
+		
+		//Note that the time information is NOT updated in each call
+		BeginDraw();
+		
+		if(screen != NULL) screen->Draw();
+		
+		EndDraw();
+		
+		SDL_RenderPresent(_renderer);
+	}
 }
 
 void SGB_Display::ResetDrawColor()
@@ -256,11 +255,6 @@ void SGB_Display::Clear()
 	SDL_RenderClear(_renderer);
 
 	ResetDrawColor();
-}
-
-void SGB_Display::UpdateDisplay()
-{
-	SDL_RenderPresent(_renderer);
 }
 
 bool SGB_Display::IsRunningOnBattery()

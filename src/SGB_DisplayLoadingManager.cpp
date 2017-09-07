@@ -53,7 +53,9 @@ void SGB_DisplayLoadingManager::Update()
 
 		if (_currentScreen != NULL)
 		{
-			proceedLoading = ((SGB_LoadingScreen*)_currentScreen)->
+			auto loadingScreen = (SGB_LoadingScreen*)_currentScreen;
+			
+			proceedLoading = loadingScreen->
 				CheckLoading(loadFinished);
 		}
 		else
@@ -65,6 +67,11 @@ void SGB_DisplayLoadingManager::Update()
 			FinishLoadingProcess();
 		}
 	}
+	else if (_screenToBeLoaded != NULL)
+	{
+		PrepareToLoad();
+		StartLoadingProcess();
+	}
 }
 
 void SGB_DisplayLoadingManager::SetOwner(SGB_Display * owner)
@@ -72,10 +79,9 @@ void SGB_DisplayLoadingManager::SetOwner(SGB_Display * owner)
 	_owner = owner;
 }
 
-void SGB_DisplayLoadingManager::SetScreen(SGB_Screen * screen)
+void SGB_DisplayLoadingManager::SetScreen(SGB_Screen* screen)
 {
-	PrepareToLoad(screen);
-	StartLoadingProcess();
+	_screenToBeLoaded = screen;
 }
 
 void SGB_DisplayLoadingManager::SetLoadingScreen(SGB_Screen* screen)
@@ -96,7 +102,7 @@ void SGB_DisplayLoadingManager::SetLoadingScreen(SGB_Screen* screen)
 	}
 }
 
-void SGB_DisplayLoadingManager::PrepareToLoad(SGB_Screen* screen)
+void SGB_DisplayLoadingManager::PrepareToLoad()
 {
 	_screenToBeUnloaded = _currentScreen;
 	if (_screenToBeUnloaded != NULL)
@@ -104,17 +110,16 @@ void SGB_DisplayLoadingManager::PrepareToLoad(SGB_Screen* screen)
 		_screenToBeUnloaded->ScreenFinish();
 	}
 
-	_screenToBeLoaded = screen;
+	//_screenToBeLoaded = screen;
 
 	_currentScreen = NULL;
 
 	if (_currentLoadingScreen != NULL)
 	{
-		_currentLoadingScreen->ScreenShow();
-
 		_currentScreen = _currentLoadingScreen;
+		_currentLoadingScreen->ScreenShow();
 	}
-
+	
 	_screenToBeLoaded->SetLoadingQueue(
 		_currentLoadingScreen);
 
@@ -169,7 +174,6 @@ void SGB_DisplayLoadingManager::FinishLoadingProcess()
 	}
 
 	_currentScreen = _screenToBeLoaded;
-
 	_currentScreen->ScreenShow();
 
 	_screenToBeLoaded = NULL;
